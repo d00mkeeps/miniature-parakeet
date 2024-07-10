@@ -3,7 +3,7 @@ import { useUserExercises } from '@/hooks/useUserExercises';
 import Select, {StylesConfig} from 'react-select';
 
 interface ExerciseSelectFieldProps {
-  onExerciseSelect: (exerciseId: number | null) => void;
+  onExerciseSelect: (exercise: { id: number; name: string } | null) => void;
 }
 
 const ExerciseSelectField: React.FC<ExerciseSelectFieldProps> = ({ onExerciseSelect }) => {
@@ -26,25 +26,24 @@ const ExerciseSelectField: React.FC<ExerciseSelectFieldProps> = ({ onExerciseSel
   return (
     <Select
       options={options}
-      onChange={(selectedOption) => onExerciseSelect(selectedOption ? selectedOption.value : null)}
+      onChange={(selectedOption) => onExerciseSelect(selectedOption ? { id: selectedOption.value, name: selectedOption.label } : null)}
       placeholder="Select an exercise"
       isClearable
       isSearchable
-      className="select-container" // Add a class for the container
-      classNamePrefix="select" // This is important for targeting inner elements
+      className="select-container" 
+      classNamePrefix="select" 
       styles={{
-        // Target the text color of various parts
         option: (base) => ({
           ...base,
-          color: '#333333', // Darker text for options
+          color: '#333333', 
         }),
         singleValue: (base) => ({
           ...base,
-          color: '#333333', // Darker text for selected value
+          color: '#333333', 
         }),
         placeholder: (base) => ({
           ...base,
-          color: '#666666', // Slightly lighter for placeholder
+          color: '#666666', 
         }),
       }}
     />

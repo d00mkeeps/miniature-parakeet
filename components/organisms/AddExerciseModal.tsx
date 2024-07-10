@@ -5,23 +5,22 @@ import Button from '../atoms/Button';
 interface AddExerciseModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (exerciseId: number) => void;
+  onConfirm: (exerciseId: number, exerciseName: string) => void;
 }
 
 const AddExerciseModal: React.FC<AddExerciseModalProps> = ({ isOpen, onClose, onConfirm }) => {
-  const [selectedExercise, setSelectedExercise] = useState<number | null>(null);
+  const [selectedExercise, setSelectedExercise] = useState<{ id: number; name: string } | null>(null);
 
-  const handleExerciseSelect = (exerciseId: number | null) => {
-    setSelectedExercise(exerciseId);
+  const handleExerciseSelect = (exercise: { id: number; name: string } | null) => {
+    setSelectedExercise(exercise);
   };
 
   const handleConfirm = () => {
     if (selectedExercise !== null) {
-      onConfirm(selectedExercise);
+      onConfirm(selectedExercise.id, selectedExercise.name);
       onClose();
     }
   };
-
   if (!isOpen) return null;
 
   return (

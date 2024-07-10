@@ -10,11 +10,15 @@ interface Set {
 }
 
 interface ExerciseProps {
-  id: number;
+  index: number;
+  exercise: {
+    id: number;
+    name: string;
+  };
   onDelete: () => void;
 }
 
-const ExerciseDiv: React.FC<ExerciseProps> = ({ id, onDelete }) => {
+const ExerciseDiv: React.FC<ExerciseProps> = ({ index, exercise,onDelete }) => {
   const [sets, setSets] = useState<Set[]>([]);
   const [nextSetId, setNextSetId] = useState(1);
 
@@ -35,20 +39,25 @@ const ExerciseDiv: React.FC<ExerciseProps> = ({ id, onDelete }) => {
   return (
     <div className="exercise-container bg-gray-700 p-4 mb-4 rounded-lg shadow-md relative">
       <div className="absolute top-2 left-2 bg-gray-600 rounded-full w-6 h-6 flex items-center justify-center">
-        <span className="text-white text-sm font-bold">{id}</span>
+        <span className="text-white text-sm font-bold">{index+1}</span>
       </div>
-      <div className="flex justify-between items-center mb-4">
-        <p className="text-white">Exercise #{id}</p>
-        <Button 
-          onClick={onDelete} 
-          variant="danger"
-          size="small"
-        >
-          Delete Exercise
-        </Button>
+      <div className="flex flex-col mb-4">
+        <div className="flex justify-between items-center mb-2">
+          <div className="w-8"></div> {/* Spacer to balance the delete button */}
+          <p className="text-white text-center font-semibold text-xl flex-grow">{exercise.name}</p>
+          <div>
+            <Button
+              onClick={onDelete}
+              variant="danger"
+              size="small"
+            >
+              Delete Exercise
+            </Button>
+          </div>
+        </div>
       </div>
-      <Button 
-        onClick={addSet} 
+      <Button
+        onClick={addSet}
         variant="secondary"
         size="small"
         className="mb-2"
@@ -58,8 +67,8 @@ const ExerciseDiv: React.FC<ExerciseProps> = ({ id, onDelete }) => {
       {sets.map(set => (
         <div key={set.id} className="set-container mt-2 p-2 bg-gray-600 rounded flex justify-between items-center">
           <p className="text-white">Set {set.id}: {set.weight}kg x {set.reps} reps</p>
-          <Button 
-            onClick={() => deleteSet(set.id)} 
+          <Button
+            onClick={() => deleteSet(set.id)}
             variant="danger"
             size="small"
           >
