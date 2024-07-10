@@ -1,16 +1,19 @@
 'use client';
-
 import React, { useState } from 'react';
 import ExerciseDiv from './ExerciseDiv';
-import Button from '../atoms/Button';  // Import your Button component
+import Button from '../atoms/Button';
+import AddExerciseModal from './AddExerciseModal';
 
 const WorkoutTracker: React.FC = () => {
   const [exercises, setExercises] = useState<number[]>([]);
-  const [nextExerciseId, setNextExerciseId] = useState(1);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const addExercise = () => {
-    setExercises(prevExercises => [...prevExercises, nextExerciseId]);
-    setNextExerciseId(prevId => prevId + 1);
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
+  const addExercise = (exerciseId: number) => {
+    setExercises(prevExercises => [...prevExercises, exerciseId]);
+    closeModal();
   };
 
   const deleteExercise = (id: number) => {
@@ -19,8 +22,8 @@ const WorkoutTracker: React.FC = () => {
 
   return (
     <div className="workout-tracker w-full">
-      <Button 
-        onClick={addExercise} 
+      <Button
+        onClick={openModal}
         variant="primary"
         size="medium"
         className="mb-4"
@@ -28,12 +31,17 @@ const WorkoutTracker: React.FC = () => {
         Add Exercise
       </Button>
       {exercises.map((exerciseId) => (
-        <ExerciseDiv 
-          key={exerciseId} 
-          id={exerciseId} 
+        <ExerciseDiv
+          key={exerciseId}
+          id={exerciseId}
           onDelete={() => deleteExercise(exerciseId)}
         />
       ))}
+      <AddExerciseModal 
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        onConfirm={addExercise}
+      />
     </div>
   );
 };

@@ -1,47 +1,60 @@
-'use client'
-
-import {useState, useEffect} from 'react'
-import { useUser } from '@/contexts/UserContext'
-import {createClient} from '../utils/supabase/client'
+import { useState, useEffect } from 'react';
+import { useUser } from '@/contexts/UserContext';
+import { createClient } from '@/utils/supabase/client';
 
 export interface Exercise {
-    id: number
-    name: string
-    description:string
-    is_template: boolean
+  id: number;
+  name: string;
+  description: string | null;
+  is_template: boolean;
 }
 
-export const useUserExercises = () => {
-    const {userProfile} = useUser()
-    const [exercises, setExercises] = useState<Exercise[]>([])
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState<Error | null>(null)
-    const supabase = createClient()
+export const useUserExercises = (fetchTemplatesOnly: boolean = false) => {
+  const { userProfile } = useUser();
+  const [exercises, setExercises] = useState<Exercise[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+  const supabase = createClient();
 
-useEffect(() => {
+  useEffect(() => {
     const fetchExercises = async () => {
-        if (!userProfile) return
+      try {
+        let query = supabase.from('exercises').select('*');
 
-        try {
-            const { data, error} = await supabase
-            .from('exercises')
-            .select('*')
-            .eq('user_id', userProfile.user_id)
-
-            if (error) throw error
-
-            setExercises(data as Exercise[])
-        } catch (err) {
-            setError(err instanceof Error ? err: new Error('An unknown error occured!'))
-        } finally {
-            setLoading(false)
+        if (fetchTemplatesOnly) {
+          query = query.eq('is_template', true);
+        } else if (userProfile) {
+          // Fetch both template exercises and user-specific exercises
+          query = query.or(`is_template.eq.true,user_id.eq.${userProfile.user_id}`);
+        } else {
+          // If no user profile and not fetching templates only, just fetch templates
+          query = query.eq('is_template', true);
         }
-    }
 
-    fetchExercises()
-    
-}, [userProfile])
+        const { data, error } = await query;
 
-return { exercises, loading, error}
-}
+        if (error) {
+          console.error('Supabase error:', error);
+          throw error;
+        }
 
+        if (!data) {
+          console.log('No data returned from Supabase');
+          setExercises([]);
+        } else {
+          console.log('Exercises fetched:', data);
+          setExercises(data as Exercise[]);
+        }
+      } catch (err) {
+        console.error('Error in fetchExercises:', err);
+        setError(err instanceof Error ? err : new Error('An unknown error occurred'));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchExercises();
+  }, [userProfile, fetchTemplatesOnly]);
+
+  return { exercises, loading, error };
+};
