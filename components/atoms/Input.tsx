@@ -1,9 +1,6 @@
 // components/atoms/Input.tsx
 import React, { forwardRef } from "react";
-
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  id: string;
-}
+import { InputProps } from "@/types"
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ id, ...props }, ref) => {

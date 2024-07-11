@@ -1,16 +1,6 @@
 import Link from "next/link";
 import React from "react";
-
-interface ButtonProps {
-  children: React.ReactNode;
-  onClick?: () => void;
-  href?: string;
-  type?: "button" | "submit" | "reset";
-  variant?: "primary" | "secondary" | "danger";
-  size?: "small" | "medium" | "large";
-  disabled?: boolean;
-  className?: string;
-}
+import { ButtonProps } from "@/types";
 
 const Button: React.FC<ButtonProps> = ({
   children,

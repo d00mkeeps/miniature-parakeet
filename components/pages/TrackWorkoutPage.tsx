@@ -1,7 +1,7 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
-import AuthButton from '../AuthButton';  // Server component
-import Button from '../atoms/Button';  // Assuming this is a server component
+import AuthButton from '../AuthButton';  
+import Button from '../atoms/Button'; 
 
 // Dynamically import WorkoutTracker with client-side rendering
 const WorkoutTracker = dynamic(() => import('../organisms/WorkoutTracker'), { ssr: false });

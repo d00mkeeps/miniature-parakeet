@@ -1,10 +1,7 @@
 import React from 'react';
 import { useUserExercises } from '@/hooks/useUserExercises';
 import Select, {StylesConfig} from 'react-select';
-
-interface ExerciseSelectFieldProps {
-  onExerciseSelect: (exercise: { id: number; name: string } | null) => void;
-}
+import { ExerciseSelectFieldProps } from '@/types';
 
 const ExerciseSelectField: React.FC<ExerciseSelectFieldProps> = ({ onExerciseSelect }) => {
   const { exercises, loading, error } = useUserExercises();

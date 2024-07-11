@@ -1,13 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useUser } from '@/contexts/UserContext';
+import { useUser } from '@/context/UserContext';
 import { createClient } from '@/utils/supabase/client';
-
-export interface Exercise {
-  id: number;
-  name: string;
-  description: string | null;
-  is_template: boolean;
-}
+import { Exercise } from '@/types';
 
 export const useUserExercises = (fetchTemplatesOnly: boolean = false) => {
   const { userProfile } = useUser();

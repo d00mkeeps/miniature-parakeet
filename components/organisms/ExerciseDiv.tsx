@@ -2,21 +2,7 @@
 
 import React, { useState } from 'react';
 import Button from '../atoms/Button';  // Import your Button component
-
-interface Set {
-  id: number;
-  weight: number;
-  reps: number;
-}
-
-interface ExerciseProps {
-  index: number;
-  exercise: {
-    id: number;
-    name: string;
-  };
-  onDelete: () => void;
-}
+import { Set, ExerciseProps } from '@/types';
 
 const ExerciseDiv: React.FC<ExerciseProps> = ({ index, exercise,onDelete }) => {
   const [sets, setSets] = useState<Set[]>([]);

@@ -3,12 +3,7 @@ import React, { useState } from 'react';
 import ExerciseDiv from './ExerciseDiv';
 import Button from '../atoms/Button';
 import AddExerciseModal from './AddExerciseModal';
-
-interface TrackedExercise {
-  id: number
-  name: string
-}
-
+import { TrackedExercise } from '@/types';
 
 const WorkoutTracker: React.FC = () => {
   const [exercises, setExercises] = useState<TrackedExercise[]>([]);

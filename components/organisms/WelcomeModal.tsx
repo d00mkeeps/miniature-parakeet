@@ -1,23 +1,12 @@
 // components/other/WelcomeModal.tsx
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useUser } from "../../contexts/UserContext";
+import { useUser } from "../../context/UserContext";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Button from "../atoms/Button";
 import { Input } from "../atoms/Input";
 import { Label } from "../atoms/Label";
-
-interface WelcomeModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-interface FormData {
-  displayName: string;
-  firstName: string;
-  lastName: string;
-  isImperial: boolean;
-}
+import { WelcomeModalProps, FormData } from "@/types";
 
 export const WelcomeModal: React.FC<WelcomeModalProps> = ({
   isOpen,

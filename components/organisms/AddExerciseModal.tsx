@@ -1,12 +1,7 @@
 import React, { useState } from 'react';
 import ExerciseSelectField from '../molecules/ExerciseSelectField';
 import Button from '../atoms/Button';
-
-interface AddExerciseModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: (exerciseId: number, exerciseName: string) => void;
-}
+import { AddExerciseModalProps } from '@/types';
 
 const AddExerciseModal: React.FC<AddExerciseModalProps> = ({ isOpen, onClose, onConfirm }) => {
   const [selectedExercise, setSelectedExercise] = useState<{ id: number; name: string } | null>(null);
