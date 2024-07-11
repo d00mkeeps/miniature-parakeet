@@ -31,4 +31,78 @@
   .marginRight {
     margin-right: 0.5rem;
   }
+  .setContainer {
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background-color: #4B5563; /* gray-600 */
+    border-radius: 0.25rem;
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding-left: 2rem;
+  }
   
+  .setIndex {
+    position: absolute;
+    top: 50%;
+    left: 0.5rem;
+    transform: translateY(-50%);
+    background-color: #374151; /* gray-700 */
+    border-radius: 9999px;
+    width: 1.25rem;
+    height: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .setIndexText {
+    color: white;
+    font-size: 0.75rem;
+    font-weight: bold;
+  }
+  
+  .inputGroup {
+    display: flex;
+    align-items: center;
+    margin-right: 1rem;
+  }
+  
+  .input {
+    width: 3rem;
+    background-color: #374151; /* gray-700 */
+    color: white;
+    border: 1px solid #6B7280; /* gray-500 */
+    border-radius: 0.25rem;
+    padding: 0.25rem;
+    appearance: textfield;
+    -webkit-appearance: textfield;
+    -moz-appearance: textfield;
+  }
+  
+  .input::-webkit-outer-spin-button,
+  .input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+  }
+  
+  .input[type=number] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+  
+  .label {
+    color: white;
+    margin-right: 0.5rem;
+  }
+  
+  .unitLabel {
+    color: white;
+    margin-left: 0.25rem;
+    margin-right: 0.5rem;
+  }
+  
+  .deleteButton {
+    margin-left: auto;
+  }

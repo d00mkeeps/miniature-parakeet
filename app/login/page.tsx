@@ -93,7 +93,7 @@ export default function Login({
           className="rounded-md px-4 py-2 bg-inherit border mb-6"
           type="password"
           name="password"
-          placeholder="••••••••"
+          placeholder="~~~~~~~~"
           required
         />
         <SubmitButton

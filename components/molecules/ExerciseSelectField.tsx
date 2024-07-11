@@ -27,7 +27,7 @@ const ExerciseSelectField: React.FC<ExerciseSelectFieldProps> = ({ onExerciseSel
     value={value ? { value: value.id, label: value.name} : null}
       options={options}
       onChange={(selectedOption) => onExerciseSelect(selectedOption ? { id: selectedOption.value, name: selectedOption.label } : null)}
-      placeholder="Select an exercise"
+      placeholder="Search exercises..."
       isClearable
       isSearchable
       className="select-container" 

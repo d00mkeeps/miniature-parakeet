@@ -1,3 +1,3 @@
 # supercoach
 
-TODO: add site-wide styles sooner rather than later :)
+TODO: Add more exercises to search from, add support for time based exercises

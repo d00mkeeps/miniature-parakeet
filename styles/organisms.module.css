@@ -103,4 +103,62 @@
   .setText {
     color: white;
   }
-  
+.exerciseContainer {
+  background-color: #374151; /* gray-700 */
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  position: relative;
+}
+
+.exerciseIndex {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  background-color: #4B5563; /* gray-600 */
+  border-radius: 9999px;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.exerciseIndexText {
+  color: white;
+  font-size: 0.875rem;
+  font-weight: bold;
+}
+
+.exerciseHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  position: relative;
+  padding-right: 100px; /* Adjust this value based on your button width */
+}
+
+.exerciseName {
+  color: white;
+  font-weight: 600;
+  font-size: 1.5rem;
+  margin: 0;
+  padding-left: 2rem; /* To account for the index circle */
+  text-align: center;
+  flex-grow: 1;
+}
+
+.deleteExerciseButton {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.75rem; /* Adjust this value to make the text smaller */
+  padding: 0.25rem 0.5rem; /* Adjust these values to make the button smaller */
+}
+
+.addSetButton {
+  margin-bottom: 0.5rem;
+}

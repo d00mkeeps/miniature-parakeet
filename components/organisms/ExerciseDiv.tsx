@@ -1,67 +1,81 @@
 'use client';
 
 import React, { useState } from 'react';
-import Button from '../atoms/Button';  // Import your Button component
+import Button from '../atoms/Button';
+import SetDiv from '../molecules/SetDiv';
 import { Set, ExerciseProps } from '@/types';
+import styles from '@/styles/organisms.module.css';
 
-const ExerciseDiv: React.FC<ExerciseProps> = ({ index, exercise,onDelete }) => {
+// Updated component props to include updateExerciseSet function
+const ExerciseDiv: React.FC<ExerciseProps & { updateExerciseSet: (uniqueId: string, sets: Set[]) => void }> = 
+  ({ index, exercise, onDelete, updateExerciseSet }) => {
   const [sets, setSets] = useState<Set[]>([]);
-  const [nextSetId, setNextSetId] = useState(1);
 
   const addSet = () => {
     const newSet: Set = {
-      id: nextSetId,
+      id: sets.length + 1,
       weight: 0,
       reps: 0
     };
-    setSets(prevSets => [...prevSets, newSet]);
-    setNextSetId(prevId => prevId + 1);
+    const updatedSets = [...sets, newSet];
+    setSets(updatedSets);
+    // Call updateExerciseSet to update the parent component
+    updateExerciseSet(exercise.uniqueId, updatedSets);
   };
 
   const deleteSet = (setId: number) => {
-    setSets(prevSets => prevSets.filter(set => set.id !== setId));
+    const updatedSets = sets.filter(set => set.id !== setId)
+      .map((set, index) => ({ ...set, id: index + 1 }));
+    setSets(updatedSets);
+    // Call updateExerciseSet to update the parent component
+    updateExerciseSet(exercise.uniqueId, updatedSets);
+  };
+
+  const updateSet = (id: number, weight: number, reps: number) => {
+    const updatedSets = sets.map(set =>
+      set.id === id ? { ...set, weight, reps } : set
+    );
+    setSets(updatedSets);
+    // Call updateExerciseSet to update the parent component
+    updateExerciseSet(exercise.uniqueId, updatedSets);
   };
 
   return (
-    <div className="exercise-container bg-gray-700 p-4 mb-4 rounded-lg shadow-md relative">
-      <div className="absolute top-2 left-2 bg-gray-600 rounded-full w-6 h-6 flex items-center justify-center">
-        <span className="text-white text-sm font-bold">{index+1}</span>
+    <div className={styles.exerciseContainer}>
+      <div className={styles.exerciseIndex}>
+        <span className={styles.exerciseIndexText}>{index + 1}</span>
       </div>
-      <div className="flex flex-col mb-4">
-        <div className="flex justify-between items-center mb-2">
-          <div className="w-8"></div> {/* Spacer to balance the delete button */}
-          <p className="text-white text-center font-semibold text-xl flex-grow">{exercise.name}</p>
-          <div>
-            <Button
-              onClick={onDelete}
-              variant="danger"
-              size="small"
-            >
-              Delete Exercise
-            </Button>
-          </div>
+      <div className={styles.exerciseHeader}>
+        <div className={styles.exerciseNameContainer}>
+          <h2 className={styles.exerciseName}>{exercise.name}</h2>
         </div>
+        <Button
+          onClick={onDelete}
+          variant="danger"
+          size="small"
+          className={styles.deleteExerciseButton}
+        >
+          Delete Exercise
+        </Button>
       </div>
       <Button
         onClick={addSet}
         variant="secondary"
         size="small"
-        className="mb-2"
+        className={styles.addSetButton}
       >
         Add Set
       </Button>
-      {sets.map(set => (
-        <div key={set.id} className="set-container mt-2 p-2 bg-gray-600 rounded flex justify-between items-center">
-          <p className="text-white">Set {set.id}: {set.weight}kg x {set.reps} reps</p>
-          <Button
-            onClick={() => deleteSet(set.id)}
-            variant="danger"
-            size="small"
-          >
-            Delete Set
-          </Button>
-        </div>
-      ))}
+      <div className={styles.setsContainer}>
+        {sets.map(set => (
+          <SetDiv
+            key={set.id}
+            set={set}
+            onDelete={deleteSet}
+            onUpdate={updateSet}
+          />
+        ))}
+      </div>
     </div>
   );
 };

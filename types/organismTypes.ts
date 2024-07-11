@@ -11,13 +11,14 @@ export interface Set {
 }
 
 export interface ExerciseProps {
-    index: number;
-    exercise: {
-      id: number;
-      name: string;
-    };
-    onDelete: () => void;
-  }
+  index: number;
+  exercise: {
+    id: number;
+    name: string;
+    uniqueId: string;
+  };
+  onDelete: () => void;
+}
 
 export interface WelcomeModalProps {
   isOpen: boolean;
@@ -35,5 +36,6 @@ export interface FormData {
     id: number
     name: string
     uniqueId: string
+    sets?:Set[]
   }
   
