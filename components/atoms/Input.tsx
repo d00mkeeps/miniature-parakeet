@@ -1,10 +1,17 @@
-// components/atoms/Input.tsx
 import React, { forwardRef } from "react";
-import { InputProps } from "@/types"
+import { InputProps } from "@/types";
+import styles from '@/styles/atoms.module.css';
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ id, ...props }, ref) => {
-    return <input id={id} ref={ref} {...props} />;
+  ({ id, className, ...props }, ref) => {
+    return (
+      <input 
+        id={id} 
+        ref={ref} 
+        className={`${styles.input} ${className || ''}`} 
+        {...props} 
+      />
+    );
   }
 );
 

@@ -1,0 +1,106 @@
+/* AddExerciseModal.module.css */
+
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .modalContent {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+  }
+  
+  .modalTitle {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: #4A5568; /* text-gray-800 */
+  }
+  
+  .actionContainer {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .marginRight {
+    margin-right: 0.5rem;
+  }
+  /* ExerciseDiv.module.css */
+
+.exerciseContainer {
+    background-color: #4A5568; /* bg-gray-700 */
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+  }
+  
+  .exerciseIndex {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    background-color: #2D3748; /* bg-gray-600 */
+    border-radius: 50%;
+    width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .exerciseIndexText {
+    color: white;
+    font-size: 0.875rem; /* text-sm */
+    font-weight: bold;
+  }
+  
+  .exerciseHeader {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+  }
+  
+  .headerContent {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  
+  .spacer {
+    width: 2rem; /* Spacer to balance the delete button */
+  }
+  
+  .exerciseName {
+    color: white;
+    text-align: center;
+    font-weight: 600; /* font-semibold */
+    font-size: 1.25rem; /* text-xl */
+    flex-grow: 1;
+  }
+  
+  .marginBottom {
+    margin-bottom: 0.5rem;
+  }
+  
+  .setContainer {
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background-color: #2D3748; /* bg-gray-600 */
+    border-radius: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .setText {
+    color: white;
+  }
+  

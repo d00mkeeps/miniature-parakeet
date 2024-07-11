@@ -1,6 +1,7 @@
 import Link from "next/link";
 import React from "react";
 import { ButtonProps } from "@/types";
+import styles from '@/styles/atoms.module.css';
 
 const Button: React.FC<ButtonProps> = ({
   children,
@@ -12,23 +13,13 @@ const Button: React.FC<ButtonProps> = ({
   disabled = false,
   className = "",
 }) => {
-  const baseStyles =
-    "font-bold rounded focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors";
-
-  const variantStyles = {
-    primary: "bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500",
-    secondary:
-      "bg-gray-200 hover:bg-gray-300 text-gray-800 focus:ring-gray-500",
-    danger: "bg-red-600 hover:bg-red-700 text-white focus:ring-red-500",
-  };
-
-  const sizeStyles = {
-    small: "px-2 py-1 text-sm",
-    medium: "px-4 py-2 text-base",
-    large: "px-6 py-3 text-lg",
-  };
-
-  const buttonStyles = `${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${className}`;
+  const buttonStyles = `
+    ${styles.button}
+    ${styles[`button${variant.charAt(0).toUpperCase() + variant.slice(1)}`]}
+    ${styles[`button${size.charAt(0).toUpperCase() + size.slice(1)}`]}
+    ${disabled ? styles.buttonDisabled : ''}
+    ${className}
+  `.trim();
 
   if (href && !disabled) {
     return (

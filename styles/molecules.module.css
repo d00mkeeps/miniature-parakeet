@@ -1,0 +1,34 @@
+/* AddExerciseModal.module.css */
+
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .modalContent {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+  }
+  
+  .modalTitle {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: #4A5568; /* text-gray-800 */
+  }
+  
+  .actionContainer {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .marginRight {
+    margin-right: 0.5rem;
+  }
+  

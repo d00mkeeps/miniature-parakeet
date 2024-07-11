@@ -1,6 +1,8 @@
+'use client'
+
 import React from 'react';
-import { useUserExercises } from '@/hooks/useUserExercises';
-import Select, {StylesConfig} from 'react-select';
+import { useUserExercises } from '@/context/UserExercisesContext';
+import Select from 'react-select';
 import { ExerciseSelectFieldProps } from '@/types';
 
 const ExerciseSelectField: React.FC<ExerciseSelectFieldProps> = ({ onExerciseSelect }) => {

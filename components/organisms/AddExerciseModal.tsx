@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import ExerciseSelectField from '../molecules/ExerciseSelectField';
 import Button from '../atoms/Button';
 import { AddExerciseModalProps } from '@/types';
+import styles from '@/styles/organisms.module.css';
 
 const AddExerciseModal: React.FC<AddExerciseModalProps> = ({ isOpen, onClose, onConfirm }) => {
   const [selectedExercise, setSelectedExercise] = useState<{ id: number; name: string } | null>(null);
@@ -16,15 +17,16 @@ const AddExerciseModal: React.FC<AddExerciseModalProps> = ({ isOpen, onClose, on
       onClose();
     }
   };
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white p-6 rounded-lg">
-        <h2 className="text-xl font-bold mb-4 text-gray-800">Add Exercise</h2>
+    <div className={styles.modalOverlay}>
+      <div className={styles.modalContent}>
+        <h2 className={styles.modalTitle}>Add Exercise</h2>
         <ExerciseSelectField onExerciseSelect={handleExerciseSelect} />
-        <div className="mt-4 flex justify-end">
-          <Button onClick={onClose} variant="secondary" className="mr-2">
+        <div className={styles.actionContainer}>
+          <Button onClick={onClose} variant="secondary" className={styles.marginRight}>
             Cancel
           </Button>
           <Button onClick={handleConfirm} variant="primary" disabled={selectedExercise === null}>

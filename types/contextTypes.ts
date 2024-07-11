@@ -1,3 +1,5 @@
+import { Exercise } from ".";
+
 export 
 interface UserProfile {
   first_name: string | null;
@@ -16,3 +18,10 @@ export interface UserContextType {
     loading: boolean;
     error: Error | null;
   }
+
+export interface UserExercisesContextType {
+  exercises: Exercise[];
+  loading: boolean;
+  error: Error | null;
+  refetchExercises: (fetchTemplatesOnly?: boolean) => Promise<void>;
+}
