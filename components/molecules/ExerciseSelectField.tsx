@@ -5,7 +5,7 @@ import { useUserExercises } from '@/context/UserExercisesContext';
 import Select from 'react-select';
 import { ExerciseSelectFieldProps } from '@/types';
 
-const ExerciseSelectField: React.FC<ExerciseSelectFieldProps> = ({ onExerciseSelect }) => {
+const ExerciseSelectField: React.FC<ExerciseSelectFieldProps> = ({ onExerciseSelect, value }) => {
   const { exercises, loading, error } = useUserExercises();
 
   if (loading) return <div>Loading exercises...</div>;
@@ -24,6 +24,7 @@ const ExerciseSelectField: React.FC<ExerciseSelectFieldProps> = ({ onExerciseSel
 
   return (
     <Select
+    value={value ? { value: value.id, label: value.name} : null}
       options={options}
       onChange={(selectedOption) => onExerciseSelect(selectedOption ? { id: selectedOption.value, name: selectedOption.label } : null)}
       placeholder="Select an exercise"

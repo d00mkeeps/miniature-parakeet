@@ -34,5 +34,6 @@ export interface FormData {
   export interface TrackedExercise {
     id: number
     name: string
+    uniqueId: string
   }
   

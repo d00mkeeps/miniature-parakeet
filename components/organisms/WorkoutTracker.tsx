@@ -5,8 +5,11 @@ import Button from '../atoms/Button';
 import AddExerciseModal from './AddExerciseModal';
 import { TrackedExercise } from '@/types';
 
+const generateUniqueId = () => Math.random().toString(36).substr(2, 9)
+// added to improve the ux of tracking a workout
+
 const WorkoutTracker: React.FC = () => {
-  const [exercises, setExercises] = useState<TrackedExercise[]>([]);
+  const [exercises, setExercises] = useState<(TrackedExercise & {uniqueId: string})[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
 
@@ -15,12 +18,26 @@ const WorkoutTracker: React.FC = () => {
   const closeModal = () => setIsModalOpen(false);
 
   const addExercise = (exerciseId: number, exerciseName: string) => {
-    setExercises(prevExercises => [...prevExercises, { id: exerciseId, name: exerciseName }]);
+    setExercises(prevExercises => [
+      
+      ...prevExercises, 
+      { 
+        id: exerciseId, 
+        name: exerciseName,
+      uniqueId: generateUniqueId()
+     }
+    ]);
     closeModal();
   };
 
-  const deleteExercise = (id: number) => {
-    setExercises(prevExercises => prevExercises.filter(exercise => exercise.id !== id));
+  const deleteExercise = (uniqueId: string) => {
+    console.log('Deleting exercise with uniqueId:', uniqueId);
+    console.log('Before deletion:', exercises);
+    setExercises(prevExercises => {
+      const newExercises = prevExercises.filter(exercise => exercise.uniqueId !== uniqueId);
+      console.log('After deletion:', newExercises);
+      return newExercises;
+    });
   };
 
   return (
@@ -35,12 +52,13 @@ const WorkoutTracker: React.FC = () => {
       </Button>
       {exercises.map((exercise, index) => (
         <ExerciseDiv
-          key={exercise.id}
+          key={exercise.uniqueId}
           index={index}
-          onDelete={() => deleteExercise(exercise.id)} exercise={{
-            id: 0,
+          onDelete={() => deleteExercise(exercise.uniqueId)} exercise={{
+            id: exercise.id,
             name: exercise.name
-          }}        />
+          }}       
+           />
       ))}
       <AddExerciseModal 
         isOpen={isModalOpen}

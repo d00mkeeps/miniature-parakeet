@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ExerciseSelectField from '../molecules/ExerciseSelectField';
 import Button from '../atoms/Button';
 import { AddExerciseModalProps } from '@/types';
@@ -7,6 +7,11 @@ import styles from '@/styles/organisms.module.css';
 const AddExerciseModal: React.FC<AddExerciseModalProps> = ({ isOpen, onClose, onConfirm }) => {
   const [selectedExercise, setSelectedExercise] = useState<{ id: number; name: string } | null>(null);
 
+  useEffect(() => {
+    if (!isOpen) {
+      setSelectedExercise(null)
+    }
+  }, [isOpen])
   const handleExerciseSelect = (exercise: { id: number; name: string } | null) => {
     setSelectedExercise(exercise);
   };
@@ -24,7 +29,8 @@ const AddExerciseModal: React.FC<AddExerciseModalProps> = ({ isOpen, onClose, on
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
         <h2 className={styles.modalTitle}>Add Exercise</h2>
-        <ExerciseSelectField onExerciseSelect={handleExerciseSelect} />
+        <ExerciseSelectField onExerciseSelect={handleExerciseSelect}
+        value={selectedExercise} />
         <div className={styles.actionContainer}>
           <Button onClick={onClose} variant="secondary" className={styles.marginRight}>
             Cancel
