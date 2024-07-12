@@ -20,16 +20,9 @@ export interface Set {
 
 export interface ExerciseProps {
   index: number;
-  exercise: {
-    tracks_weight: boolean;
-    tracks_reps: boolean;
-    tracks_duration: boolean;
-    tracks_distance: boolean;
-    id: number;
-    name: string;
-    uniqueId: string;
-  };
-  onDelete: () => void;
+  exerciseId: number; // Regular id for fetching exercise data
+  uniqueId: string;   // Unique id for workout-specific operations
+  onDelete: (uniqueId: string) => void;
 }
 
 export interface WelcomeModalProps {

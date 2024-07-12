@@ -5,6 +5,7 @@ import styles from '@/styles/molecules.module.css';
 import { WeightInputField, RepsInputField, DurationInputField, DistanceInputField } from './exercise/inputFields';
 
 const SetDiv: React.FC<SetDivProps> = ({ set, onDelete, onUpdate, exerciseProps }) => {
+  console.log('SetDiv rendering:', { set, exerciseProps });
   const [weight, setWeight] = useState(set.weight || 0);
   const [reps, setReps] = useState(set.reps || 0);
   const [duration, setDuration] = useState({ 
@@ -74,7 +75,11 @@ const SetDiv: React.FC<SetDivProps> = ({ set, onDelete, onUpdate, exerciseProps 
         Delete
       </Button>
 
-      
+      {!exerciseProps.tracks_weight && <p>Weight input not rendered</p>}
+      {!exerciseProps.tracks_reps && <p>Reps input not rendered</p>}
+      {!exerciseProps.tracks_duration && <p>Duration input not rendered</p>}
+      {!exerciseProps.tracks_distance && <p>Distance input not rendered</p>}
+
     </div>
   );
 };

@@ -63,16 +63,12 @@ const WorkoutTracker: React.FC = () => {
       </Button>
       {exercises.map((exercise, index) => (
         <ExerciseDiv
-          key={exercise.uniqueId}
-          index={index}
-          onDelete={() => deleteExercise(exercise.uniqueId)}
-          exercise={{
-            id: exercise.id,
-            name: exercise.name,
-            uniqueId: exercise.uniqueId
-          }}
-          updateExerciseSet={updateExerciseSet}
-        />
+        index={index}
+        exerciseId={exercise.id}
+        uniqueId={exercise.uniqueId}
+        onDelete={deleteExercise}
+        updateExerciseSet={updateExerciseSet}
+      />
       ))}
       <AddExerciseModal 
         isOpen={isModalOpen}
