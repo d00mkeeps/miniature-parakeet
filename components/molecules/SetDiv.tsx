@@ -1,65 +1,70 @@
-// SetDiv.tsx
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import Button from '../atoms/Button';
-import { Input } from '../atoms/Input';
-import { Label } from '../atoms/Label';
 import { SetDivProps } from '@/types';
 import styles from '@/styles/molecules.module.css';
+import { WeightInputField, RepsInputField, DurationInputField, DistanceInputField } from './exercise/inputFields';
 
-const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => {
-  event.target.select();
-};
-
-const SetDiv: React.FC<SetDivProps> = ({ set, onDelete, onUpdate }) => {
-  const [weight, setWeight] = useState(set.weight.toString());
-  const [reps, setReps] = useState(set.reps.toString());
-
-  const handleInputChange = (
-    value: string,
-    setter: React.Dispatch<React.SetStateAction<string>>,
-    isWeight: boolean
-  ) => {
-    const newValue = value.replace(/^0+/, '').replace(/[^\d]/g, '');
-    setter(newValue);
+const SetDiv: React.FC<SetDivProps> = ({ set, onDelete, onUpdate, exerciseProps }) => {
+  const [weight, setWeight] = useState(set.weight || 0);
+  const [reps, setReps] = useState(set.reps || 0);
+  const [duration, setDuration] = useState({ 
+    minutes: set.duration ? Math.floor(set.duration / 60) : 0, 
+    seconds: set.duration ? set.duration % 60 : 0 
+  });
+  const [distance, setDistance] = useState(set.distance || 0);
+  console.log('SetDiv rendering:', { set, exerciseProps });
+  const handleUpdate = () => {
     onUpdate(
       set.id,
-      isWeight ? Number(newValue) || 0 : Number(weight) || 0,
-      isWeight ? Number(reps) || 0 : Number(newValue) || 0
+      weight,
+      reps,
+      duration.minutes * 60 + duration.seconds,
+      distance
     );
   };
-
+  console.log('SetDiv input states:', { weight, reps, duration, distance });
   return (
     <div className={styles.setContainer}>
       <div className={styles.setIndex}>
         <span className={styles.setIndexText}>{set.id}</span>
       </div>
-      <div className={styles.inputGroup}>
-        <Label htmlFor={`weight-${set.id}`} className={styles.label}>
-          Weight:
-        </Label>
-        <Input
-          id={`weight-${set.id}`}
-          type="text"
+      {exerciseProps.tracks_weight && (
+        <WeightInputField
           value={weight}
-          onChange={(e) => handleInputChange(e.target.value, setWeight, true)}
-          className={styles.input}
-          onFocus={handleFocus}
+          onChange={(newWeight) => {
+            setWeight(newWeight);
+            handleUpdate();
+          }}
         />
-        <span className={styles.unitLabel}>kg</span>
-      </div>
-      <div className={styles.inputGroup}>
-        <Label htmlFor={`reps-${set.id}`} className={styles.label}>
-          Reps:
-        </Label>
-        <Input
-          id={`reps-${set.id}`}
-          type="text"
+      )}
+      {exerciseProps.tracks_reps && (
+        <RepsInputField
           value={reps}
-          onChange={(e) => handleInputChange(e.target.value, setReps, false)}
-          className={styles.input}
-          onFocus={handleFocus}
+          onChange={(newReps) => {
+            setReps(newReps);
+            handleUpdate();
+          }}
         />
-      </div>
+      )}
+      {exerciseProps.tracks_duration && (
+        <DurationInputField
+          minutes={duration.minutes}
+          seconds={duration.seconds}
+          onChange={(minutes, seconds) => {
+            setDuration({ minutes, seconds });
+            handleUpdate();
+          }}
+        />
+      )}
+      {exerciseProps.tracks_distance && (
+        <DistanceInputField
+          value={distance}
+          onChange={(newDistance) => {
+            setDistance(newDistance);
+            handleUpdate();
+          }}
+        />
+      )}
       <Button 
         onClick={() => onDelete(set.id)} 
         variant="danger" 
@@ -68,6 +73,8 @@ const SetDiv: React.FC<SetDivProps> = ({ set, onDelete, onUpdate }) => {
       >
         Delete
       </Button>
+
+      
     </div>
   );
 };

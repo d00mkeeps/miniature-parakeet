@@ -10,12 +10,14 @@ import styles from '@/styles/organisms.module.css';
 const ExerciseDiv: React.FC<ExerciseProps & { updateExerciseSet: (uniqueId: string, sets: Set[]) => void }> = 
   ({ index, exercise, onDelete, updateExerciseSet }) => {
   const [sets, setSets] = useState<Set[]>([]);
-
+  console.log('ExerciseDiv rendering:', { exercise, sets });
   const addSet = () => {
     const newSet: Set = {
       id: sets.length + 1,
       weight: 0,
-      reps: 0
+      reps: 0,
+      duration: 0,
+      distance: 0
     };
     const updatedSets = [...sets, newSet];
     setSets(updatedSets);
@@ -30,10 +32,18 @@ const ExerciseDiv: React.FC<ExerciseProps & { updateExerciseSet: (uniqueId: stri
     // Call updateExerciseSet to update the parent component
     updateExerciseSet(exercise.uniqueId, updatedSets);
   };
-
-  const updateSet = (id: number, weight: number, reps: number) => {
+  console.log('Rendering SetDivs with props:', { 
+    setsLength: sets.length, 
+    exerciseProps: {
+      tracks_weight: exercise.tracks_weight,
+      tracks_reps: exercise.tracks_reps,
+      tracks_duration: exercise.tracks_duration,
+      tracks_distance: exercise.tracks_distance,
+    }
+  });
+  const updateSet = (id: number, weight: number, reps: number, duration: number, distance: number) => {
     const updatedSets = sets.map(set =>
-      set.id === id ? { ...set, weight, reps } : set
+      set.id === id ? { ...set, weight, reps, duration, distance } : set
     );
     setSets(updatedSets);
     // Call updateExerciseSet to update the parent component
@@ -67,15 +77,24 @@ const ExerciseDiv: React.FC<ExerciseProps & { updateExerciseSet: (uniqueId: stri
         Add Set
       </Button>
       <div className={styles.setsContainer}>
-        {sets.map(set => (
-          <SetDiv
-            key={set.id}
-            set={set}
-            onDelete={deleteSet}
-            onUpdate={updateSet}
-          />
-        ))}
-      </div>
+        
+      {sets.map(set => (
+        
+        <SetDiv
+          key={set.id}
+          set={set}
+          onDelete={deleteSet}
+          onUpdate={updateSet}
+          exerciseProps={{
+            tracks_weight: exercise.tracks_weight,
+            tracks_reps: exercise.tracks_reps,
+            tracks_duration: exercise.tracks_duration,
+            tracks_distance: exercise.tracks_distance,
+          }}
+        />
+      ))}
+    </div>
+
     </div>
   );
 };

@@ -1,10 +1,18 @@
 export interface AddExerciseModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (exerciseId: number, exerciseName: string) => void;
+  onConfirm: (id: number, name: string, inputValues: {
+    weight: number;
+    reps: number;
+    duration: { minutes: number; seconds: number };
+    distance: number;
+  }) => void;
 }
 
+
 export interface Set {
+  duration: any;
+  distance: any;
   id: number;
   weight: number;
   reps: number;
@@ -13,6 +21,10 @@ export interface Set {
 export interface ExerciseProps {
   index: number;
   exercise: {
+    tracks_weight: boolean;
+    tracks_reps: boolean;
+    tracks_duration: boolean;
+    tracks_distance: boolean;
     id: number;
     name: string;
     uniqueId: string;
