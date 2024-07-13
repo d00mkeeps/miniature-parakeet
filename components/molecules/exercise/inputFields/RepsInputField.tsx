@@ -8,6 +8,9 @@ interface RepsInputFieldProps {
 }
 
 const RepsInputField: React.FC<RepsInputFieldProps> = ({ value, onChange }) => {
+  const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => {
+    event.target.select();
+  };
   return (
     <div className={styles.inputGroup}>
       <Label htmlFor="reps" className={styles.label}>Reps</Label>
@@ -19,6 +22,7 @@ const RepsInputField: React.FC<RepsInputFieldProps> = ({ value, onChange }) => {
         min={0}
         step={1}
         className={styles.input}
+        onFocus={handleFocus}
       />
     </div>
   );

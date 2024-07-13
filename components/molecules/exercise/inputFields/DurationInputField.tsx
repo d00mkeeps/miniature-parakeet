@@ -13,7 +13,6 @@ const DurationInputField: React.FC<DurationInputFieldProps> = ({ value, onChange
     const newValue = e.target.value;
     onChange(newValue);
   };
-
   return (
     <div className={styles.inputGroup}>
       <Label htmlFor="duration" className={styles.label}>Duration</Label>

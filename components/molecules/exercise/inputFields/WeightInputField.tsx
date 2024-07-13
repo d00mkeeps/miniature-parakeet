@@ -9,6 +9,9 @@ interface WeightInputFieldProps {
 }
 
 const WeightInputField: React.FC<WeightInputFieldProps> = ({ value, onChange }) => {
+  const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => {
+    event.target.select();
+  };
   return (
     <div className={styles.inputGroup}>
       <Label htmlFor="weight" className={styles.label}>Weight</Label>
@@ -20,6 +23,7 @@ const WeightInputField: React.FC<WeightInputFieldProps> = ({ value, onChange }) 
         min={0}
         step={0.1}
         className={styles.input}
+        onFocus={handleFocus}
       />
       <span className={styles.unitLabel}>kg</span>
     </div>
