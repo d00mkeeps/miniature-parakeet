@@ -7,7 +7,8 @@ import AddExerciseModal from './AddExerciseModal';
 import { useWorkoutTracker } from '@/hooks/useWorkoutTracker';
 
 const WorkoutTracker: React.FC = () => {
-  const { exercises, addExercise, deleteExercise, updateExerciseSet, submitWorkout } = useWorkoutTracker();
+  const userId = 1 //use the usercontext to grab the actual user id
+  const { exercises, addExercise, deleteExercise, updateExerciseSet, submitWorkout } = useWorkoutTracker(userId);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = () => setIsModalOpen(true);
@@ -19,11 +20,13 @@ const WorkoutTracker: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-    const submittedData = await submitWorkout();
-    // You can do something with submittedData if needed
-    setTimeout(() => {alert("Workout submitted and cleared!");}, 33);
+    try {
+      await submitWorkout();
+      alert('Workout submitted successfully!');
+    } catch (error) {
+      alert('Failed to submit workout. Please try again.');
+    }
   };
-
   return (
     <div className="workout-tracker w-full">
       <Button

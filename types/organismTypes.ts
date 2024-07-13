@@ -12,7 +12,7 @@ export interface AddExerciseModalProps {
 
 export interface Set {
   duration: any;
-  distance: any;
+  distance: number;
   id: number;
   weight: number;
   reps: number;
