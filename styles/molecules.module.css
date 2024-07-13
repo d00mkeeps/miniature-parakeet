@@ -106,3 +106,26 @@
   .deleteButton {
     margin-left: auto;
   }
+
+  /* Add this to your existing molecules.module.css file */
+.durationInput {
+  width: 5rem; /* Adjust this value as needed */
+  text-align: center;
+  padding: 0.25rem;
+  background-color: #374151; /* gray-700 */
+  color: white;
+  border: 1px solid #6B7280; /* gray-500 */
+  border-radius: 0.25rem;
+  appearance: textfield;
+  -webkit-appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.durationInput::-webkit-calendar-picker-indicator {
+  filter: invert(1); /* This makes the clock icon white */
+}
+
+.widerTimeInput {
+  width: 100px; /* Adjust this value as needed */
+  padding-right: 5px; /* Optional: gives some space for the arrow controls */
+}

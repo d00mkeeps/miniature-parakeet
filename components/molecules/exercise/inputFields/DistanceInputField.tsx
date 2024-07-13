@@ -1,7 +1,7 @@
 import React from 'react';
 import { Input } from '@/components/atoms/Input';
 import { Label } from '@/components/atoms/Label';
-
+import styles from '@/styles/molecules.module.css'
 interface DistanceInputFieldProps {
   value: number;
   onChange: (value: number) => void;
@@ -9,8 +9,8 @@ interface DistanceInputFieldProps {
 
 const DistanceInputField: React.FC<DistanceInputFieldProps> = ({ value, onChange }) => {
   return (
-    <div>
-      <Label htmlFor="distance">Distance (km)</Label>
+    <div className={styles.inputGroup}>
+      <Label htmlFor="distance" className={styles.label}>Distance</Label>
       <Input
         id="distance"
         type="number"
@@ -18,7 +18,9 @@ const DistanceInputField: React.FC<DistanceInputFieldProps> = ({ value, onChange
         onChange={(e) => onChange(parseFloat(e.target.value))}
         min={0}
         step={0.1}
+        className={styles.input}
       />
+      <span className={styles.unitLabel}>km</span>
     </div>
   );
 };

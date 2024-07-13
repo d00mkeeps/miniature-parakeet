@@ -1,29 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '../atoms/Button';
 import { SetDivProps } from '@/types';
 import styles from '@/styles/molecules.module.css';
 import { WeightInputField, RepsInputField, DurationInputField, DistanceInputField } from './exercise/inputFields';
 
 const SetDiv: React.FC<SetDivProps> = ({ set, onDelete, onUpdate, exerciseProps }) => {
-  console.log('SetDiv rendering:', { set, exerciseProps });
   const [weight, setWeight] = useState(set.weight || 0);
   const [reps, setReps] = useState(set.reps || 0);
-  const [duration, setDuration] = useState({ 
-    minutes: set.duration ? Math.floor(set.duration / 60) : 0, 
-    seconds: set.duration ? set.duration % 60 : 0 
-  });
+  const [duration, setDuration] = useState(formatDuration(set.duration || 0));
   const [distance, setDistance] = useState(set.distance || 0);
-  console.log('SetDiv rendering:', { set, exerciseProps });
+
+  useEffect(() => {
+    handleUpdate();
+  }, [weight, reps, duration, distance]);
+
   const handleUpdate = () => {
     onUpdate(
       set.id,
       weight,
       reps,
-      duration.minutes * 60 + duration.seconds,
+      parseDuration(duration),
       distance
     );
   };
-  console.log('SetDiv input states:', { weight, reps, duration, distance });
+
   return (
     <div className={styles.setContainer}>
       <div className={styles.setIndex}>
@@ -32,38 +32,25 @@ const SetDiv: React.FC<SetDivProps> = ({ set, onDelete, onUpdate, exerciseProps 
       {exerciseProps.tracks_weight && (
         <WeightInputField
           value={weight}
-          onChange={(newWeight) => {
-            setWeight(newWeight);
-            handleUpdate();
-          }}
+          onChange={setWeight}
         />
       )}
       {exerciseProps.tracks_reps && (
         <RepsInputField
           value={reps}
-          onChange={(newReps) => {
-            setReps(newReps);
-            handleUpdate();
-          }}
+          onChange={setReps}
         />
       )}
       {exerciseProps.tracks_duration && (
         <DurationInputField
-          minutes={duration.minutes}
-          seconds={duration.seconds}
-          onChange={(minutes, seconds) => {
-            setDuration({ minutes, seconds });
-            handleUpdate();
-          }}
+          value={duration}
+          onChange={setDuration}
         />
       )}
       {exerciseProps.tracks_distance && (
         <DistanceInputField
           value={distance}
-          onChange={(newDistance) => {
-            setDistance(newDistance);
-            handleUpdate();
-          }}
+          onChange={setDistance}
         />
       )}
       <Button 
@@ -74,14 +61,21 @@ const SetDiv: React.FC<SetDivProps> = ({ set, onDelete, onUpdate, exerciseProps 
       >
         Delete
       </Button>
-
-      {!exerciseProps.tracks_weight && <p>Weight input not rendered</p>}
-      {!exerciseProps.tracks_reps && <p>Reps input not rendered</p>}
-      {!exerciseProps.tracks_duration && <p>Duration input not rendered</p>}
-      {!exerciseProps.tracks_distance && <p>Distance input not rendered</p>}
-
     </div>
   );
 };
+
+// Helper function to format duration from seconds to "MM:SS"
+function formatDuration(totalSeconds: number): string {
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
+
+// Helper function to parse "MM:SS" to total seconds
+function parseDuration(duration: string): number {
+  const [minutes, seconds] = duration.split(':').map(Number);
+  return minutes * 60 + seconds;
+}
 
 export default SetDiv;
