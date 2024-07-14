@@ -1,0 +1,44 @@
+/* pages/index.module.css */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: #4A5568;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  color: white;
+  font-size: 1.5rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.step {
+  background-color: #2D3748;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 0.5rem;
+}
+
+.stepTitle {
+  color: white;
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.stepContent {
+  color: #E2E8F0;
+  margin-bottom: 0.5rem;
+}
+
+.stepList {
+  color: #E2E8F0;
+  padding-left: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.stepList li {
+  margin-bottom: 0.25rem;
+}
