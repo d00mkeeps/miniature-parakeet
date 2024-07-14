@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useUser } from "@/context/UserContext";
-import { WelcomeModal } from "@/components/organisms/WelcomeModal";
+import { WelcomeModal } from "@/components/organisms/misc/WelcomeModal";
 import Button from "../atoms/Button";
+import TimeframeParser from "../organisms/backend/TimeFrameParser";
 
 export default function HomePageContent() {
   const { userProfile, loading } = useUser();
@@ -31,6 +32,7 @@ export default function HomePageContent() {
         <main className="flex-1 flex flex-col gap-6">
           <h2 className="font-bold text-4xl mb-4">Welcome to TrainSmart!</h2>
           <p>You have lots of work to do.</p>
+          <TimeframeParser/>
         </main>
         <div>
           <Button 

@@ -4,7 +4,7 @@ import AuthButton from '../AuthButton';
 import Button from '../atoms/Button'; 
 
 // Dynamically import WorkoutTracker with client-side rendering
-const WorkoutTracker = dynamic(() => import('../organisms/WorkoutTracker'), { ssr: false });
+const WorkoutTracker = dynamic(() => import('../organisms/workout/WorkoutTracker'), { ssr: false });
 
 export default function TrackWorkoutPage() {
   return (
