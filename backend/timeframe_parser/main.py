@@ -1,4 +1,5 @@
-import subprocess, re, sys, logging, os
+import re, logging, os, json
+from typing import List, Dict
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -116,14 +117,69 @@ def parse_timeframe(timeframe_string: str):
     # Default case if no timeframe is found
     logger.warning("No matching pattern found, using default timeframe")
     return (now - timedelta(days=30)).date(), now.date()
+# workout readability parsing logic
 
-def fetch_workout_data(user_id: int, start_date: datetime, end_date: datetime):
+def format_set_data(set_data: str) -> str:
+    try:
+        parsed_data = json.loads(set_data)
+        formatted_sets = []
+        for index, set_info in enumerate(parsed_data, 1):
+            set_details = []
+            if set_info.get('weight', 0) > 0:
+                set_details.append(f"{set_info['weight']} kg")
+            if set_info.get('reps', 0) > 0:
+                set_details.append(f"{set_info['reps']} reps")
+            if set_info.get('duration', 0) > 0:
+                set_details.append(f"{set_info['duration']} minutes")
+            if set_info.get('distance', 0) > 0:
+                set_details.append(f"{set_info['distance']} km")
+            formatted_sets.append(f"Set {index}: {', '.join(set_details)}")
+        return '; '.join(formatted_sets)
+    except json.JSONDecodeError:
+        return "Invalid set data"
+
+def format_workout_data(workouts: List[Dict], start_date: datetime, end_date: datetime, original_query: str) -> str:
+    formatted_output = f"""Original query: {original_query}
+
+Timeframe:
+Start Date: {start_date.strftime('%Y-%m-%d')}
+End Date: {end_date.strftime('%Y-%m-%d')}
+
+Workouts:
+"""
+    if not workouts:
+        formatted_output += "No workouts found in this timeframe."
+    else:
+        for workout in workouts:
+            workout_date = datetime.fromisoformat(workout['created_at']).strftime('%d/%m/%Y')
+            exercises = workout.get('exercises', [])
+            formatted_exercises = [
+                f"* {exercise.get('exercise_name', 'Unnamed Exercise')}: {format_set_data(exercise.get('set_data', '[]'))}"
+                for exercise in exercises
+            ]
+            
+            formatted_workout = f"""
+Workout: {workout.get('name') or 'Unnamed Workout'}
+Date: {workout_date}
+Description: {workout.get('description') or 'No description'}
+Exercises:
+{chr(10).join(formatted_exercises)}
+""".strip()
+            
+            formatted_output += formatted_workout + "\n\n"
+    
+    return formatted_output.strip()
+
+
+# workout fetching based on timeframes
+
+def fetch_workout_data(user_id: int, start_date: datetime, end_date: datetime, original_query: str):
     try:
         # Fetch workouts
         workouts_response = supabase.table("workouts").select("*").eq("user_id", user_id).gte("created_at", start_date.isoformat()).lte("created_at", end_date.isoformat()).execute()
         
         if not workouts_response.data:
-            return []
+            return format_workout_data([], start_date, end_date, original_query)
 
         workout_data = []
         for workout in workouts_response.data:
@@ -133,20 +189,14 @@ def fetch_workout_data(user_id: int, start_date: datetime, end_date: datetime):
             exercises = exercises_response.data if exercises_response.data else []
 
             workout_data.append({
-                "id": workout.get("id"),
-                "name": workout.get("name", ""),  # Default to empty string if null
-                "created_at": workout.get("created_at"),
-                "description": workout.get("description", ""),  # Default to empty string if null
-                "exercises": [
-                    {
-                        "id": exercise.get("id"),
-                        "exercise_name": exercise.get("exercise_name", ""),  # Default to empty string if null
-                        "set_data": exercise.get("set_data", {}),  # Default to empty dict if null
-                        "order_in_workout": exercise.get("order_in_workout", 0)  # Default to 0 if null
-                    } for exercise in exercises
-                ]
+                "id": workout["id"],
+                "name": workout["name"],
+                "created_at": workout["created_at"],
+                "description": workout["description"],
+                "exercises": exercises
             })
-        return workout_data
+
+        return format_workout_data(workout_data, start_date, end_date, original_query)
     except Exception as e:
         logger.error(f"Error fetching workout data: {str(e)}")
         raise HTTPException(status_code=500, detail="Error fetching workout data")
@@ -158,13 +208,10 @@ async def parse_timeframe_endpoint(request: TimeframeRequest):
     start_date, end_date = parse_timeframe(request.timeframe)
     
     try:
-        workout_data = fetch_workout_data(request.user_id, start_date, end_date)
+        formatted_workout_data = fetch_workout_data(request.user_id, start_date, end_date, request.timeframe)
         
         response = {
-            "start_date": start_date.isoformat(),
-            "end_date": end_date.isoformat(),
-            "original_query": request.timeframe,
-            "workout_data": workout_data
+            "formatted_data": formatted_workout_data
         }
         logger.info(f"Responding with: {response}")
         return response

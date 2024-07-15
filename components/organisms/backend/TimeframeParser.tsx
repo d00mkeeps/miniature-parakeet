@@ -5,26 +5,8 @@ import axios from 'axios';
 import { useUser } from '@/context/UserContext';
 import styles from './TimeframeParser.module.css';
 
-interface WorkoutExercise {
-  id: string;
-  exercise_name: string;
-  set_data: Record<string, any>;
-  order_in_workout: number;
-}
-
-interface Workout {
-  id: string;
-  name: string;
-  created_at: string;
-  description: string;
-  exercises: WorkoutExercise[];
-}
-
 interface ParsedTimeframe {
-  start_date: string;
-  end_date: string;
-  original_query: string;
-  workout_data: Workout[];
+  formatted_data: string;
 }
 
 const TimeframeParser = () => {
@@ -46,7 +28,7 @@ const TimeframeParser = () => {
 
     try {
       const response = await axios.post('/api/parse-timeframe', { 
-        timeframe, 
+        timeframe,
         user_id: userProfile.user_id 
       });
       setResult(response.data);
@@ -63,6 +45,30 @@ const TimeframeParser = () => {
   if (userError) {
     return <div>Error loading user profile: {userError.message}</div>;
   }
+  const formatOutput = (data: string) => {
+    const parts = data.split('\n\n');
+    const timeframeParts = parts[1].split('\n');
+    
+    return (
+      <>
+        <div className={styles.querySection}>
+          <strong>Original Query:</strong>
+          <p className={styles.wrappedText}>{parts[0].replace('Original query: ', '')}</p>
+        </div>
+        <div className={styles.timeframeSection}>
+          <strong>Timeframe:</strong>
+          <p>{timeframeParts[1]}</p>
+          <p>{timeframeParts[2]}</p>
+        </div>
+        <div className={styles.workoutsSection}>
+          <strong>Workouts:</strong>
+          <div className={styles.scrollableContent}>
+            <pre>{parts.slice(2).join('\n\n')}</pre>
+          </div>
+        </div>
+      </>
+    );
+  };
 
   return (
     <div className={styles.container}>
@@ -72,7 +78,7 @@ const TimeframeParser = () => {
           type="text"
           value={timeframe}
           onChange={(e) => setTimeframe(e.target.value)}
-          placeholder="Enter timeframe (e.g., 'last 2 weeks')"
+          placeholder="Enter timeframe"
           className={styles.input}
         />
         <button type="submit" className={styles.button} disabled={!userProfile}>
@@ -82,33 +88,7 @@ const TimeframeParser = () => {
       {error && <p className={styles.error}>{error}</p>}
       {result && (
         <div className={styles.result}>
-          <h3>Parsed Timeframe:</h3>
-          <p>Start Date: {result.start_date}</p>
-          <p>End Date: {result.end_date}</p>
-          <h3>Workouts:</h3>
-          {result.workout_data.length === 0 ? (
-            <p>No workouts found in this timeframe.</p>
-          ) : (
-            result.workout_data.map((workout) => (
-              <div key={workout.id} className={styles.workout}>
-                <h4>{workout.name || 'Unnamed Workout'}</h4>
-                <p>Date: {new Date(workout.created_at).toLocaleDateString()}</p>
-                <p>Description: {workout.description || 'No description'}</p>
-                <h5>Exercises:</h5>
-                {workout.exercises.length === 0 ? (
-                  <p>No exercises recorded for this workout.</p>
-                ) : (
-                  <ul>
-                    {workout.exercises.map((exercise) => (
-                      <li key={exercise.id}>
-                        {exercise.exercise_name || 'Unnamed Exercise'} (Sets: {JSON.stringify(exercise.set_data)})
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            ))
-          )}
+          {formatOutput(result.formatted_data)}
         </div>
       )}
     </div>

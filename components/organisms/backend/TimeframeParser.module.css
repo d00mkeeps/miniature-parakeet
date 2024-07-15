@@ -45,8 +45,31 @@
   }
   
   .result {
-    background-color: #4B5563;
-    padding: 1rem;
-    border-radius: 0.25rem;
-    color: white;
+    margin-top: 20px;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 5px;
+  }
+
+  .querySection, .timeframeSection, .workoutsSection {
+    margin-bottom: 15px;
+  }
+  
+  .wrappedText {
+    word-wrap: break-word;
+    white-space: pre-wrap;
+  }
+  
+  .scrollableContent {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #eee;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  
+  .scrollableContent pre {
+    margin: 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
   }
