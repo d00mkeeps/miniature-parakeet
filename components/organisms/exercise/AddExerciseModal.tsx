@@ -3,7 +3,6 @@ import ExerciseSelectField from '@/components/molecules/exercise/ExerciseSelectF
 import Button from '@/components/atoms/Button';
 import { AddExerciseModalProps, Exercise } from '@/types';
 import styles from '@/styles/organisms.module.css';
-import { WeightInputField, RepsInputField, DurationInputField, DistanceInputField } from '@/components/molecules/exercise/inputFields';
 
 interface InputValues {
   weight: number;
@@ -79,36 +78,7 @@ const AddExerciseModal: React.FC<AddExerciseModalProps> = ({ isOpen, onClose, on
     }
   };
 
-  const renderInputFields = () => {
-    return (
-      <>
-        {exerciseType & 1 && (
-          <WeightInputField 
-            value={inputValues.weight} 
-            onChange={handleWeightChange} 
-          />
-        )}
-        {exerciseType & 2 && (
-          <RepsInputField 
-            value={inputValues.reps} 
-            onChange={handleRepsChange} 
-          />
-        )}
-        {exerciseType & 4 && (
-  <DurationInputField 
-    value={`${inputValues.duration.minutes.toString().padStart(2, '0')}:${inputValues.duration.seconds.toString().padStart(2, '0')}`}
-    onChange={handleDurationChange} 
-  />
-)}
-        {exerciseType & 8 && (
-          <DistanceInputField 
-            value={inputValues.distance} 
-            onChange={handleDistanceChange} 
-          />
-        )}
-      </>
-    );
-  };
+  
 
   if (!isOpen) return null;
 
@@ -119,7 +89,7 @@ const AddExerciseModal: React.FC<AddExerciseModalProps> = ({ isOpen, onClose, on
         <ExerciseSelectField onExerciseSelect={handleExerciseSelect} value={selectedExercise} />
         {selectedExercise && (
           <div className={styles.inputFieldsContainer}>
-            {renderInputFields()}
+       
           </div>
         )}
         <div className={styles.actionContainer}>
