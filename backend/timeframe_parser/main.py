@@ -45,6 +45,8 @@ logger = logging.getLogger(__name__)
 class TimeframeRequest(BaseModel):
     timeframe: str
     user_id: int
+    training_history: str
+    goals: str
 
 timeframe_patterns = [
     (r'^(\d+)\s+(days?|weeks?|months?|years?)$', lambda m: (int(m.group(1)), m.group(2).rstrip('s'))),
@@ -181,34 +183,70 @@ Exercises:
 
 # workout fetching based on timeframes
 
-def fetch_workout_data(user_id: int, start_date: datetime, end_date: datetime, original_query: str):
+def format_workout_data(workouts: List[Dict], start_date: datetime, end_date: datetime, original_query: str, training_history: str, goals: str) -> str:
+    formatted_output = f"""Original query: {original_query}
+
+User Context:
+Training History: {training_history}
+Goals: {goals}
+
+Timeframe:
+Start Date: {start_date.strftime('%Y-%m-%d')}
+End Date: {end_date.strftime('%Y-%m-%d')}
+
+Workouts:
+"""
+    if not workouts:
+        formatted_output += "No workouts found in this timeframe."
+    else:
+        for workout in workouts:
+            workout_date = datetime.fromisoformat(workout['created_at']).strftime('%d/%m/%Y')
+            exercises = workout.get('exercises', [])
+            formatted_exercises = [
+                f"* {exercise.get('exercise_name', 'Unnamed Exercise')}: {exercise.get('formatted_set_data', 'No set data')}"
+                for exercise in exercises
+            ]
+            
+            formatted_workout = f"""
+Workout: {workout.get('name') or 'Unnamed Workout'}
+Date: {workout_date}
+Description: {workout.get('description') or 'No description'}
+Exercises:
+{chr(10).join(formatted_exercises)}
+""".strip()
+            
+            formatted_output += formatted_workout + "\n\n"
+    
+    return formatted_output.strip()
+
+def fetch_workout_data(user_id: int, start_date: datetime, end_date: datetime, original_query: str, training_history: str, goals: str):
     try:
         # Fetch workouts
         workouts_response = supabase.table("workouts").select("*").eq("user_id", user_id).gte("created_at", start_date.isoformat()).lte("created_at", end_date.isoformat()).execute()
         
-        if not workouts_response.data:
-            return format_workout_data([], start_date, end_date, original_query)
-
         workout_data = []
-        for workout in workouts_response.data:
-            # Fetch associated exercises for each workout
-            exercises_response = supabase.table("workout_exercises").select("*").eq("workout_id", workout["id"]).order("order_in_workout").execute()
-            
-            exercises = exercises_response.data if exercises_response.data else []
+        if workouts_response.data:
+            for workout in workouts_response.data:
+                # Fetch associated exercises for each workout
+                exercises_response = supabase.table("workout_exercises").select("*").eq("workout_id", workout["id"]).order("order_in_workout").execute()
+                
+                exercises = exercises_response.data if exercises_response.data else []
 
-            # Format set data for each exercise
-            for exercise in exercises:
-                exercise['formatted_set_data'] = format_set_data(exercise.get('set_data', '[]'))
+                # Format set data for each exercise
+                for exercise in exercises:
+                    exercise['formatted_set_data'] = format_set_data(exercise.get('set_data', '[]'))
 
-            workout_data.append({
-                "id": workout["id"],
-                "name": workout["name"],
-                "created_at": workout["created_at"],
-                "description": workout["description"],
-                "exercises": exercises
-            })
+                workout_data.append({
+                    "id": workout["id"],
+                    "name": workout["name"],
+                    "created_at": workout["created_at"],
+                    "description": workout["description"],
+                    "exercises": exercises
+                })
 
-        return format_workout_data(workout_data, start_date, end_date, original_query)
+        formatted_output = format_workout_data(workout_data, start_date, end_date, original_query, training_history, goals)
+
+        return formatted_output
     except Exception as e:
         logger.error(f"Error fetching workout data: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error fetching workout data: {str(e)}")
@@ -220,7 +258,14 @@ async def parse_timeframe_endpoint(request: TimeframeRequest):
     start_date, end_date = parse_timeframe(request.timeframe)
     
     try:
-        formatted_workout_data = fetch_workout_data(request.user_id, start_date, end_date, request.timeframe)
+        formatted_workout_data = fetch_workout_data(
+            request.user_id, 
+            start_date, 
+            end_date, 
+            request.timeframe,
+            request.training_history,
+            request.goals
+        )
         
         response = {
             "formatted_data": formatted_workout_data

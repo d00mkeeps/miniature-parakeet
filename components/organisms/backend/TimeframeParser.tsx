@@ -29,7 +29,9 @@ const TimeframeParser = () => {
     try {
       const response = await axios.post('/api/parse-timeframe', { 
         timeframe,
-        user_id: userProfile.user_id 
+        user_id: userProfile.user_id,
+        training_history: userProfile.training_history,
+        goals: userProfile.goals,
       });
       setResult(response.data);
     } catch (err) {
@@ -56,7 +58,7 @@ const TimeframeParser = () => {
           <p className={styles.wrappedText}>{parts[0].replace('Original query: ', '')}</p>
         </div>
         <div className={styles.timeframeSection}>
-          <strong>Timeframe:</strong>
+          <strong>User context:</strong>
           <p>{timeframeParts[1]}</p>
           <p>{timeframeParts[2]}</p>
         </div>
