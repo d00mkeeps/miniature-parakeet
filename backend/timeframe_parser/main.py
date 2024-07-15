@@ -119,9 +119,16 @@ def parse_timeframe(timeframe_string: str):
     return (now - timedelta(days=30)).date(), now.date()
 # workout readability parsing logic
 
-def format_set_data(set_data: str) -> str:
+import json
+
+def format_set_data(set_data):
     try:
-        parsed_data = json.loads(set_data)
+        # If set_data is a string, parse it. Otherwise, use it as is.
+        parsed_data = json.loads(set_data) if isinstance(set_data, str) else set_data
+        
+        if not isinstance(parsed_data, list):
+            parsed_data = [parsed_data]
+        
         formatted_sets = []
         for index, set_info in enumerate(parsed_data, 1):
             set_details = []
@@ -132,12 +139,13 @@ def format_set_data(set_data: str) -> str:
             if set_info.get('duration', 0) > 0:
                 set_details.append(f"{set_info['duration']} minutes")
             if set_info.get('distance', 0) > 0:
-                set_details.append(f"{set_info['distance']} km")
+                set_details.append(f"{set_info['distance']} {set_info.get('unit', 'km')}")
             formatted_sets.append(f"Set {index}: {', '.join(set_details)}")
         return '; '.join(formatted_sets)
     except json.JSONDecodeError:
         return "Invalid set data"
-
+    except Exception as e:
+        return f"Error processing set data: {str(e)}"
 def format_workout_data(workouts: List[Dict], start_date: datetime, end_date: datetime, original_query: str) -> str:
     formatted_output = f"""Original query: {original_query}
 
@@ -154,7 +162,7 @@ Workouts:
             workout_date = datetime.fromisoformat(workout['created_at']).strftime('%d/%m/%Y')
             exercises = workout.get('exercises', [])
             formatted_exercises = [
-                f"* {exercise.get('exercise_name', 'Unnamed Exercise')}: {format_set_data(exercise.get('set_data', '[]'))}"
+                f"* {exercise.get('exercise_name', 'Unnamed Exercise')}: {exercise.get('formatted_set_data', 'No set data')}"
                 for exercise in exercises
             ]
             
@@ -188,6 +196,10 @@ def fetch_workout_data(user_id: int, start_date: datetime, end_date: datetime, o
             
             exercises = exercises_response.data if exercises_response.data else []
 
+            # Format set data for each exercise
+            for exercise in exercises:
+                exercise['formatted_set_data'] = format_set_data(exercise.get('set_data', '[]'))
+
             workout_data.append({
                 "id": workout["id"],
                 "name": workout["name"],
@@ -199,8 +211,8 @@ def fetch_workout_data(user_id: int, start_date: datetime, end_date: datetime, o
         return format_workout_data(workout_data, start_date, end_date, original_query)
     except Exception as e:
         logger.error(f"Error fetching workout data: {str(e)}")
-        raise HTTPException(status_code=500, detail="Error fetching workout data")
-
+        raise HTTPException(status_code=500, detail=f"Error fetching workout data: {str(e)}")
+    
 @app.post("/parse_timeframe")
 async def parse_timeframe_endpoint(request: TimeframeRequest):
     logger.info(f"Received query: {request.timeframe} for user_id: {request.user_id}")
