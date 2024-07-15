@@ -1,24 +1,23 @@
-import subprocess, re, sys, logging
+import subprocess, re, sys, logging, os
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
+from supabase import create_client, Client
+# remember to install requirements lol
 
-# install requirements
+# initialization code
+load_dotenv()
 
-def install_requirements():
-    try:
-        subprocess.check_call([sys.executable,  "-m", "pip", "install", "-r","requirements.txt", "-q"])
-        print("Requirements installed successfully.")
-    except subprocess.CalledProcessError as e:
-        print(f"Error installing requirements: {e}")
-        sys.exit(1)
+supabase_url: str = os.getenv("SUPABASE_URL")
+supabase_key: str = os.getenv("SUPABASE_ANON_KEY")
 
-if __name__ == "__main__":
-    install_requirements()
-    
-# service code 
+if not supabase_url or not supabase_key:
+    raise ValueError("Supabase URL or key not found in environment variables")
+
+supabase: Client = create_client(supabase_url, supabase_key)
 
 app = FastAPI()
 
@@ -36,9 +35,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# logging setup
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
+
 # parsing 
 class TimeframeRequest(BaseModel):
     timeframe: str
+    user_id: int
 
 timeframe_patterns = [
     (r'^(\d+)\s+(days?|weeks?|months?|years?)$', lambda m: (int(m.group(1)), m.group(2).rstrip('s'))),
@@ -78,10 +83,6 @@ def extract_timeframe(timeframe_string: str) -> str:
     logger.debug(f"Extracted timeframe: '{result}'")
     return result
 
-
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
-
 timeframe_mapping = {
     'day': lambda x: timedelta(days=x),
     'week': lambda x: timedelta(weeks=x),
@@ -116,21 +117,64 @@ def parse_timeframe(timeframe_string: str):
     logger.warning("No matching pattern found, using default timeframe")
     return (now - timedelta(days=30)).date(), now.date()
 
+def fetch_workout_data(user_id: int, start_date: datetime, end_date: datetime):
+    try:
+        # Fetch workouts
+        workouts_response = supabase.table("workouts").select("*").eq("user_id", user_id).gte("created_at", start_date.isoformat()).lte("created_at", end_date.isoformat()).execute()
+        
+        if not workouts_response.data:
+            return []
+
+        workout_data = []
+        for workout in workouts_response.data:
+            # Fetch associated exercises for each workout
+            exercises_response = supabase.table("workout_exercises").select("*").eq("workout_id", workout["id"]).order("order_in_workout").execute()
+            
+            exercises = exercises_response.data if exercises_response.data else []
+
+            workout_data.append({
+                "id": workout.get("id"),
+                "name": workout.get("name", ""),  # Default to empty string if null
+                "created_at": workout.get("created_at"),
+                "description": workout.get("description", ""),  # Default to empty string if null
+                "exercises": [
+                    {
+                        "id": exercise.get("id"),
+                        "exercise_name": exercise.get("exercise_name", ""),  # Default to empty string if null
+                        "set_data": exercise.get("set_data", {}),  # Default to empty dict if null
+                        "order_in_workout": exercise.get("order_in_workout", 0)  # Default to 0 if null
+                    } for exercise in exercises
+                ]
+            })
+        return workout_data
+    except Exception as e:
+        logger.error(f"Error fetching workout data: {str(e)}")
+        raise HTTPException(status_code=500, detail="Error fetching workout data")
+
 @app.post("/parse_timeframe")
 async def parse_timeframe_endpoint(request: TimeframeRequest):
-    logger.info(f"Received query: {request.timeframe}")
+    logger.info(f"Received query: {request.timeframe} for user_id: {request.user_id}")
+    
     start_date, end_date = parse_timeframe(request.timeframe)
-    response = {
-        "start_date": start_date.isoformat(),
-        "end_date": end_date.isoformat(),
-        "original_query": request.timeframe
-    }
-    logger.info(f"Responding with: {response}")
-    return response
+    
+    try:
+        workout_data = fetch_workout_data(request.user_id, start_date, end_date)
+        
+        response = {
+            "start_date": start_date.isoformat(),
+            "end_date": end_date.isoformat(),
+            "original_query": request.timeframe,
+            "workout_data": workout_data
+        }
+        logger.info(f"Responding with: {response}")
+        return response
+    except Exception as e:
+        logger.error(f"Error processing request: {str(e)}")
+        raise HTTPException(status_code=500, detail="Error processing request")
 
 @app.get("/")
 async def root():
-    return {"message": "Welcome to the Timeframe Parser API"}
+    return {"message": "Welcome to the Workout Data API"}
 
 if __name__ == "__main__":
     import uvicorn
