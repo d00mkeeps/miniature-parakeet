@@ -9,6 +9,8 @@ interface UserProfile {
   display_name: string | null;
   user_id: number;
   auth_user_uuid: string | null;
+  training_history: string | null;
+  goals: string | null;
 }
 
 

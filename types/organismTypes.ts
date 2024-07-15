@@ -35,6 +35,8 @@ export interface FormData {
     firstName: string;
     lastName: string;
     isImperial: boolean;
+    about: string | null;
+    goals: string | null;
   }
 
   export interface TrackedExercise {

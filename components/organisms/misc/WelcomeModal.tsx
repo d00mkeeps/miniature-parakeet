@@ -24,6 +24,8 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
       firstName: "",
       lastName: "",
       isImperial: false,
+      about: "",
+      goals: ""
     },
   });
 
@@ -40,6 +42,8 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
           first_name: data.firstName || null,
           last_name: data.lastName || null,
           is_imperial: data.isImperial,
+          about: data.about,
+          goals: data.goals
         })
         .eq("auth_user_uuid", userProfile.auth_user_uuid);
 
@@ -56,6 +60,8 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
         first_name: data.firstName || null,
         last_name: data.lastName || null,
         is_imperial: data.isImperial,
+        training_history: data.about,
+        goals: data.goals
       });
 
       console.log("Local state updated");
@@ -84,6 +90,7 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
                 required: "Display name is required",
               })}
               className="w-full p-2 border rounded bg-gray-800"
+              placeholder="kingjohn21"
             />
             {errors.displayName && (
               <span className="text-red-500">{errors.displayName.message}</span>
@@ -95,6 +102,7 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
               id="firstName"
               {...register("firstName")}
               className="w-full p-2 border rounded bg-gray-800"
+              placeholder="John"
             />
           </div>
           <div className="mb-4">
@@ -103,8 +111,32 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
               id="lastName"
               {...register("lastName")}
               className="w-full p-2 border rounded bg-gray-800"
+              placeholder="Doe"
             />
           </div>
+
+          <div className="mb-4">
+            <Label htmlFor="goals">Goals</Label>
+            <textarea
+              id="goals"
+              {...register("goals")}
+              className="w-full p-2 border rounded bg-gray-800"
+              rows={3}
+              placeholder="I want to get healthier!"
+            ></textarea>
+          </div>
+
+          <div className="mb-4">
+            <Label htmlFor="about">About You</Label>
+            <textarea
+              id="about"
+              {...register("about")}
+              className="w-full p-2 border rounded bg-gray-800"
+              placeholder="I've been training for a little while now..."
+            />
+          </div>
+
+
           <div className="mb-4">
             <Label htmlFor="isImperial">
               <input
