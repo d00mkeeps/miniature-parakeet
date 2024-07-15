@@ -3,7 +3,13 @@
 import React from 'react';
 import { useUserExercises } from '@/context/UserExercisesContext';
 import Select from 'react-select';
-import { ExerciseSelectFieldProps } from '@/types';
+import { Exercise, ExerciseSelectFieldProps } from '@/types';
+
+type ExerciseOption = {
+  value: number;
+  label: string;
+  exercise: Exercise;
+};
 
 const ExerciseSelectField: React.FC<ExerciseSelectFieldProps> = ({ onExerciseSelect, value }) => {
   const { exercises, loading, error } = useUserExercises();
@@ -15,38 +21,37 @@ const ExerciseSelectField: React.FC<ExerciseSelectFieldProps> = ({ onExerciseSel
     return <div>No exercises found. Please add some exercises first.</div>;
   }
 
-  const options = exercises.map(exercise => ({
+  const options: ExerciseOption[]= exercises.map(exercise => ({
     value: exercise.id,
     label: exercise.name,
-    isTemplate: exercise.is_template,
-    description: exercise.description,
+    exercise: exercise,
   }));
 
   return (
-    <Select
-    value={value ? { value: value.id, label: value.name} : null}
-      options={options}
-      onChange={(selectedOption) => onExerciseSelect(selectedOption ? { id: selectedOption.value, name: selectedOption.label } : null)}
-      placeholder="Search exercises..."
-      isClearable
-      isSearchable
-      className="select-container" 
-      classNamePrefix="select" 
-      styles={{
-        option: (base) => ({
-          ...base,
-          color: '#333333', 
-        }),
-        singleValue: (base) => ({
-          ...base,
-          color: '#333333', 
-        }),
-        placeholder: (base) => ({
-          ...base,
-          color: '#666666', 
-        }),
-      }}
-    />
+    <Select<ExerciseOption>
+  value={value ? { value: value.id, label: value.name, exercise: value } : null}
+  options={options}
+  onChange={(selectedOption) => onExerciseSelect(selectedOption ? selectedOption.exercise : null)}
+  placeholder="Search exercises..."
+  isClearable
+  isSearchable
+  className="select-container" 
+  classNamePrefix="select" 
+  styles={{
+    option: (base) => ({
+      ...base,
+      color: '#333333', 
+    }),
+    singleValue: (base) => ({
+      ...base,
+      color: '#333333', 
+    }),
+    placeholder: (base) => ({
+      ...base,
+      color: '#666666', 
+    }),
+  }}
+/>
   );
 };
 

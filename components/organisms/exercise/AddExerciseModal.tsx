@@ -60,10 +60,14 @@ const AddExerciseModal: React.FC<AddExerciseModalProps> = ({ isOpen, onClose, on
     setInputValues(prev => ({ ...prev, reps: newReps }));
   };
 
-  const handleDurationChange = (minutes: number, seconds: number) => {
-    setInputValues(prev => ({ ...prev, duration: { minutes, seconds } }));
+  const handleDurationChange = (value: string) => {
+    // Assuming the value is in the format "MM:SS"
+    const [minutes, seconds] = value.split(':').map(Number);
+    setInputValues(prev => ({
+      ...prev,
+      duration: { minutes: minutes || 0, seconds: seconds || 0 }
+    }));
   };
-
   const handleDistanceChange = (newDistance: number) => {
     setInputValues(prev => ({ ...prev, distance: newDistance }));
   };
@@ -91,12 +95,11 @@ const AddExerciseModal: React.FC<AddExerciseModalProps> = ({ isOpen, onClose, on
           />
         )}
         {exerciseType & 4 && (
-          <DurationInputField 
-            minutes={inputValues.duration.minutes} 
-            seconds={inputValues.duration.seconds} 
-            onChange={handleDurationChange} 
-          />
-        )}
+  <DurationInputField 
+    value={`${inputValues.duration.minutes.toString().padStart(2, '0')}:${inputValues.duration.seconds.toString().padStart(2, '0')}`}
+    onChange={handleDurationChange} 
+  />
+)}
         {exerciseType & 8 && (
           <DistanceInputField 
             value={inputValues.distance} 

@@ -2,9 +2,7 @@ import { Exercise, Set } from "."
 
 export interface ExerciseSelectFieldProps {
   onExerciseSelect: (exercise: Exercise | null) => void;
-  value: {
-    name: any;id: number
-  } | null
+  value: Exercise | null;
 }
 
 export interface SetDivProps {
