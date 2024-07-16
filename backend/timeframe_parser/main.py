@@ -7,23 +7,27 @@ from pydantic import BaseModel
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from supabase import create_client, Client
-# remember to install requirements lol
+import anthropic
 
-# initialization code
+# Initialization code
 load_dotenv()
 
 supabase_url: str = os.getenv("SUPABASE_URL")
 supabase_key: str = os.getenv("SUPABASE_ANON_KEY")
+anthropic_api_key: str = os.getenv("ANTHROPIC_API_KEY")
 
 if not supabase_url or not supabase_key:
     raise ValueError("Supabase URL or key not found in environment variables")
 
+if not anthropic_api_key:
+    raise ValueError("Anthropic API key not found in environment variables")
+
 supabase: Client = create_client(supabase_url, supabase_key)
+anthropic_client = anthropic.Anthropic(api_key=anthropic_api_key)
 
 app = FastAPI()
 
 # CORS config
-
 origins = [
     'http://localhost:3000'
 ]
@@ -36,12 +40,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# logging setup
-
+# Logging setup
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-# parsing 
+# Parsing
 class TimeframeRequest(BaseModel):
     timeframe: str
     user_id: int
@@ -63,7 +66,6 @@ def extract_timeframe(timeframe_string: str) -> str:
         'days', 'weeks', 'months', 'years'
     ]
     
-    # Remove all punctuation except for hyphens
     timeframe_string = re.sub(r'[^\w\s-]', '', timeframe_string)
     
     words = timeframe_string.lower().split()
@@ -93,12 +95,10 @@ timeframe_mapping = {
     'year': lambda x: relativedelta(years=x)
 }
 
-
 def parse_timeframe(timeframe_string: str):
     now = datetime.now()
     logger.debug(f"Current date: {now}")
     
-    # Extract relevant timeframe information
     extracted_timeframe = extract_timeframe(timeframe_string)
     logger.debug(f"Extracted timeframe: '{extracted_timeframe}'")
     
@@ -116,16 +116,11 @@ def parse_timeframe(timeframe_string: str):
             logger.debug(f"Calculated start_date: {start_date}, end_date: {end_date}")
             return start_date.date(), end_date.date()
     
-    # Default case if no timeframe is found
     logger.warning("No matching pattern found, using default timeframe")
     return (now - timedelta(days=30)).date(), now.date()
-# workout readability parsing logic
-
-import json
 
 def format_set_data(set_data):
     try:
-        # If set_data is a string, parse it. Otherwise, use it as is.
         parsed_data = json.loads(set_data) if isinstance(set_data, str) else set_data
         
         if not isinstance(parsed_data, list):
@@ -148,40 +143,6 @@ def format_set_data(set_data):
         return "Invalid set data"
     except Exception as e:
         return f"Error processing set data: {str(e)}"
-def format_workout_data(workouts: List[Dict], start_date: datetime, end_date: datetime, original_query: str) -> str:
-    formatted_output = f"""Original query: {original_query}
-
-Timeframe:
-Start Date: {start_date.strftime('%Y-%m-%d')}
-End Date: {end_date.strftime('%Y-%m-%d')}
-
-Workouts:
-"""
-    if not workouts:
-        formatted_output += "No workouts found in this timeframe."
-    else:
-        for workout in workouts:
-            workout_date = datetime.fromisoformat(workout['created_at']).strftime('%d/%m/%Y')
-            exercises = workout.get('exercises', [])
-            formatted_exercises = [
-                f"* {exercise.get('exercise_name', 'Unnamed Exercise')}: {exercise.get('formatted_set_data', 'No set data')}"
-                for exercise in exercises
-            ]
-            
-            formatted_workout = f"""
-Workout: {workout.get('name') or 'Unnamed Workout'}
-Date: {workout_date}
-Description: {workout.get('description') or 'No description'}
-Exercises:
-{chr(10).join(formatted_exercises)}
-""".strip()
-            
-            formatted_output += formatted_workout + "\n\n"
-    
-    return formatted_output.strip()
-
-
-# workout fetching based on timeframes
 
 def format_workout_data(workouts: List[Dict], start_date: datetime, end_date: datetime, original_query: str, training_history: str, goals: str) -> str:
     formatted_output = f"""Original query: {original_query}
@@ -221,18 +182,15 @@ Exercises:
 
 def fetch_workout_data(user_id: int, start_date: datetime, end_date: datetime, original_query: str, training_history: str, goals: str):
     try:
-        # Fetch workouts
         workouts_response = supabase.table("workouts").select("*").eq("user_id", user_id).gte("created_at", start_date.isoformat()).lte("created_at", end_date.isoformat()).execute()
         
         workout_data = []
         if workouts_response.data:
             for workout in workouts_response.data:
-                # Fetch associated exercises for each workout
                 exercises_response = supabase.table("workout_exercises").select("*").eq("workout_id", workout["id"]).order("order_in_workout").execute()
                 
                 exercises = exercises_response.data if exercises_response.data else []
 
-                # Format set data for each exercise
                 for exercise in exercises:
                     exercise['formatted_set_data'] = format_set_data(exercise.get('set_data', '[]'))
 
@@ -250,7 +208,27 @@ def fetch_workout_data(user_id: int, start_date: datetime, end_date: datetime, o
     except Exception as e:
         logger.error(f"Error fetching workout data: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error fetching workout data: {str(e)}")
-    
+
+def get_ai_coaching_advice(formatted_workout_data: str) -> str:
+    message = anthropic_client.messages.create(
+        model="claude-3-5-sonnet-20240620",
+        max_tokens=1000,
+        temperature=0,
+        system="You are a world-class coach. Provide useful training advice based on the user's workout data and context. Be concise and specific.",
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": formatted_workout_data
+                    }
+                ]
+            }
+        ]
+    )
+    return message.content
+
 @app.post("/parse_timeframe")
 async def parse_timeframe_endpoint(request: TimeframeRequest):
     logger.info(f"Received query: {request.timeframe} for user_id: {request.user_id}")
@@ -267,8 +245,11 @@ async def parse_timeframe_endpoint(request: TimeframeRequest):
             request.goals
         )
         
+        ai_advice = get_ai_coaching_advice(formatted_workout_data)
+        
         response = {
-            "formatted_data": formatted_workout_data
+            "formatted_data": formatted_workout_data,
+            "ai_advice": ai_advice
         }
         logger.info(f"Responding with: {response}")
         return response
