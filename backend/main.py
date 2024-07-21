@@ -214,7 +214,7 @@ def get_ai_coaching_advice(formatted_workout_data: str) -> str:
         model="claude-3-5-sonnet-20240620",
         max_tokens=1000,
         temperature=0,
-        system="You are a world-class coach. Provide useful training advice based on the user's workout data and context. Be concise and specific.",
+        system="You are a world-class coach. Provide useful training advice based on the user's workout data and context. Be concise and specific. Once you've formulated a high-quality response that incorporates the user data in a meaningful way, then return your response to the query. It's very important for you to respond with evidence based thoughts.",
         messages=[
             {
                 "role": "user",

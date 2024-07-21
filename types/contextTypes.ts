@@ -7,7 +7,7 @@ interface UserProfile {
   date_of_birth: string | null;
   is_imperial: boolean;
   display_name: string | null;
-  user_id: number;
+  user_id:  string;
   auth_user_uuid: string | null;
   training_history: string | null;
   goals: string | null;

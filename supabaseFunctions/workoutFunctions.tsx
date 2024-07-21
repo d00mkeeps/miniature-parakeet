@@ -8,7 +8,7 @@ export async function uploadWorkout(userId: number, exercises: TrackedExercise[]
       // Insert the workout
       const { data: workout, error: workoutError } = await supabase
         .from('workouts')
-        .insert({ user_id: userId, date: new Date() })
+        .insert({ user_id: userId})
         .select()
         .single()
   

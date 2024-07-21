@@ -1,0 +1,26 @@
+
+.programPage {
+    min-height: 100vh;
+    background-color: #f3f4f6;
+  }
+  
+  .programPageMain {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+  
+  .errorText {
+    color: #ef4444;
+    font-weight: bold;
+  }
+  
+  .noProgramsMessage {
+    text-align: center;
+    margin-top: 2rem;
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  }
+  

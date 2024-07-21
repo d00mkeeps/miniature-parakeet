@@ -86,3 +86,13 @@
     opacity: 0.65;
     pointer-events: none;
   }
+
+
+  .heading {
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+  .paragraph {
+    margin-bottom: 0.5rem;
+  }
