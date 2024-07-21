@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import Button from '../atoms/Button';
+import Button from '@/components/atoms/Button';
 import { SetDivProps } from '@/types';
 import styles from '@/styles/molecules.module.css';
-import { WeightInputField, RepsInputField, DurationInputField, DistanceInputField } from './exercise/inputFields';
+import { WeightInputField, RepsInputField, DurationInputField, DistanceInputField } from './inputFields';
 
 const SetDiv: React.FC<SetDivProps> = ({ set, onDelete, onUpdate, exerciseProps }) => {
   const [weight, setWeight] = useState(set.weight || 0);

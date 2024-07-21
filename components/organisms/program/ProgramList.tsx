@@ -5,7 +5,7 @@ import styles from '@/styles/organisms.module.css';
 
 interface ProgramListProps {
   programs: Program[];
-  onDelete: (id: number) => void;
+  onDelete: (id: string) => void;
 }
 
 const ProgramList: React.FC<ProgramListProps> = ({ programs, onDelete }) => (

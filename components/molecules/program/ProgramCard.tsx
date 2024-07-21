@@ -7,34 +7,36 @@ import styles from '@/styles/molecules.module.css';
 
 interface ProgramCardProps {
   program: Program;
-  onDelete: (id: number) => void;
+  onDelete: (id: string) => void;  // Changed to string assuming UUID
 }
 
 const ProgramCard: React.FC<ProgramCardProps> = ({ program, onDelete }) => (
   <div className={styles.programCard}>
     <Heading level={2}>{program.name}</Heading>
     <Paragraph>{program.description || "No description"}</Paragraph>
-    <Paragraph className={styles.programDate}>
-      Created: {new Date(program.time).toLocaleDateString()}
-    </Paragraph>
-    <div className={styles.programActions}>
-      <Button
-        href={`/programs/edit/${program.id}`}
-        variant="primary"
-        size="small"
-      >
-        <PencilIcon className={styles.buttonIcon} />
-        Edit
-      </Button>
-      <Button
-        onClick={() => onDelete(program.id)}
-        variant="danger"
-        size="small"
-      >
-        Delete
-      </Button>
+    <div className={styles.programCardFooter}>
+      <Paragraph className={styles.programDate}>
+        Created: {new Date(program.time).toLocaleDateString()}
+      </Paragraph>
+      <div className={styles.programActions}>
+        <Button
+          href={`/programs/edit/${program.id}`}
+          variant="primary"
+          size="small"
+        >
+          <PencilIcon className={styles.buttonIcon} />
+          Edit
+        </Button>
+        <Button
+          onClick={() => onDelete(program.id)}
+          variant="danger"
+          size="small"
+        >
+          Delete
+        </Button>
+      </div>
     </div>
   </div>
 );
 
-export default ProgramCard
+export default ProgramCard;
