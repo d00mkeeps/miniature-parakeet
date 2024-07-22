@@ -3,11 +3,8 @@
 import { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { useUser } from '@/context/UserContext';
-import styles from './TimeframeParser.module.css';
-
-interface ParsedTimeframe {
-  ai_advice: { text: string; type: string }[];
-}
+import styles from '@/styles/organisms.module.css';
+import { ParsedTimeframe } from '@/types';
 
 const TimeframeParser = () => {
   const [query, setQuery] = useState('');

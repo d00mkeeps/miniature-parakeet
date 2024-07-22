@@ -3,13 +3,7 @@
 import React from 'react';
 import { useUserExercises } from '@/context/UserExercisesContext';
 import Select from 'react-select';
-import { Exercise, ExerciseSelectFieldProps } from '@/types';
-
-type ExerciseOption = {
-  value: number;
-  label: string;
-  exercise: Exercise;
-};
+import { ExerciseOption, ExerciseSelectFieldProps } from '@/types';
 
 const ExerciseSelectField: React.FC<ExerciseSelectFieldProps> = ({ onExerciseSelect, value }) => {
   const { exercises, loading, error } = useUserExercises();

@@ -1,3 +1,5 @@
+import { Program } from ".";
+
 export interface AddExerciseModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -46,3 +48,18 @@ export interface FormData {
     sets?:Set[]
   }
   
+  export interface InputValues {
+    weight: number;
+    reps: number;
+    duration: { minutes: number; seconds: number };
+    distance: number;
+  }
+
+  export interface ParsedTimeframe {
+    ai_advice: { text: string; type: string }[];
+  }
+
+  export interface ProgramListProps {
+    programs: Program[];
+    onDelete: (id: string) => void;
+  }

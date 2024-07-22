@@ -2,11 +2,7 @@ import React from 'react';
 import { Input } from '@/components/atoms/Input';
 import { Label } from '@/components/atoms/Label';
 import styles from '@/styles/molecules.module.css'
-
-interface DurationInputFieldProps {
-  value: string; // Format: "MM:SS"
-  onChange: (value: string) => void;
-}
+import { DurationInputFieldProps } from '@/types';
 
 const DurationInputField: React.FC<DurationInputFieldProps> = ({ value, onChange }) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

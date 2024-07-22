@@ -2,10 +2,8 @@ import React from 'react';
 import { Input } from '@/components/atoms/Input';
 import { Label } from '@/components/atoms/Label';
 import styles from '@/styles/molecules.module.css'
-interface RepsInputFieldProps {
-  value: number;
-  onChange: (value: number) => void;
-}
+import { RepsInputFieldProps } from '@/types';
+
 
 const RepsInputField: React.FC<RepsInputFieldProps> = ({ value, onChange }) => {
   const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => {

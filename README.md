@@ -1,6 +1,6 @@
 # supercoach
 
-# TODO:
+### TODO:
 
-- Upload workouts to supabase upon submission
-- Improve exercise modal design
+- Organise file tree
+- Add program editing

@@ -1,15 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import ExerciseSelectField from '@/components/molecules/exercise/ExerciseSelectField';
 import Button from '@/components/atoms/Button';
-import { AddExerciseModalProps, Exercise } from '@/types';
+import { AddExerciseModalProps, Exercise, InputValues } from '@/types';
 import styles from '@/styles/organisms.module.css';
-
-interface InputValues {
-  weight: number;
-  reps: number;
-  duration: { minutes: number; seconds: number };
-  distance: number;
-}
 
 const AddExerciseModal: React.FC<AddExerciseModalProps> = ({ isOpen, onClose, onConfirm }) => {
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);

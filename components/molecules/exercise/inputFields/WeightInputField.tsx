@@ -2,11 +2,7 @@ import React from 'react';
 import { Input } from '@/components/atoms/Input';
 import { Label } from '@/components/atoms/Label';
 import styles from '@/styles/molecules.module.css';
-
-interface WeightInputFieldProps {
-  value: number;
-  onChange: (value: number) => void;
-}
+import { WeightInputFieldProps } from '@/types';
 
 const WeightInputField: React.FC<WeightInputFieldProps> = ({ value, onChange }) => {
   const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => {

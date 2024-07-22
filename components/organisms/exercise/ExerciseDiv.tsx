@@ -3,7 +3,7 @@ import Button from '@/components/atoms/Button';
 import SetDiv from '@/components/molecules/exercise/SetDiv';
 import { Set, ExerciseProps } from '@/types';
 import styles from '@/styles/organisms.module.css';
-import { useUserExercises } from '@/context/UserExercisesContext'; // Adjust the import path as necessary
+import { useUserExercises } from '@/context/UserExercisesContext';
 
 const ExerciseDiv: React.FC<ExerciseProps & { updateExerciseSet: (uniqueId: string, sets: Set[]) => void }> = 
   ({ index, exerciseId, uniqueId, onDelete, updateExerciseSet }) => {

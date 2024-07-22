@@ -1,4 +1,3 @@
-import AuthButton from "../atoms/AuthButton";
 import Button from "../atoms/Button";
 
 export default function LandingPage() {

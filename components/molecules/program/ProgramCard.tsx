@@ -1,14 +1,9 @@
 import React from 'react';
-import { Program } from '@/types';
+import { ProgramCardProps } from '@/types';
 import Button from '@/components/atoms/Button';
 import { Heading, Paragraph } from '@/components/atoms/Typography';
 import { PencilIcon } from '@heroicons/react/24/solid';
 import styles from '@/styles/molecules.module.css';
-
-interface ProgramCardProps {
-  program: Program;
-  onDelete: (id: string) => void;  // Changed to string assuming UUID
-}
 
 const ProgramCard: React.FC<ProgramCardProps> = ({ program, onDelete }) => (
   <div className={styles.programCard}>

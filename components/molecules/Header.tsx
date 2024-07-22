@@ -1,4 +1,3 @@
-// components/molecules/Header.tsx
 import Button from "../atoms/Button";
 
 export default function Header({ children }: { children: React.ReactNode }) {

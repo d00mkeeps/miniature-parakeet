@@ -4,8 +4,6 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { createClient } from "../utils/supabase/client"; // Adjust this import path as needed
 import { UserProfile, UserContextType } from "@/types";
 
-
-
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({

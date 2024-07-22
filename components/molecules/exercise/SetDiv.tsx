@@ -65,14 +65,12 @@ const SetDiv: React.FC<SetDivProps> = ({ set, onDelete, onUpdate, exerciseProps 
   );
 };
 
-// Helper function to format duration from seconds to "MM:SS"
 function formatDuration(totalSeconds: number): string {
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
   return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 }
 
-// Helper function to parse "MM:SS" to total seconds
 function parseDuration(duration: string): number {
   const [minutes, seconds] = duration.split(':').map(Number);
   return minutes * 60 + seconds;

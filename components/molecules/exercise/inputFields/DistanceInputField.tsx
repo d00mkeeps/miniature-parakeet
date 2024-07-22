@@ -2,10 +2,7 @@ import React from 'react';
 import { Input } from '@/components/atoms/Input';
 import { Label } from '@/components/atoms/Label';
 import styles from '@/styles/molecules.module.css'
-interface DistanceInputFieldProps {
-  value: number;
-  onChange: (value: number) => void;
-}
+import { DistanceInputFieldProps } from '@/types';
 
 const DistanceInputField: React.FC<DistanceInputFieldProps> = ({ value, onChange }) => {
   const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => {

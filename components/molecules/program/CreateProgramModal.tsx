@@ -5,13 +5,7 @@ import Button from '@/components/atoms/Button';
 import { Heading } from '@/components/atoms/Typography';
 import styles from '@/styles/molecules.module.css';
 import { insertProgram } from '@/supabaseFunctions/programFunctions';
-import { Program } from '@/types';
-
-interface CreateProgramModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onProgramCreated?: (program: Program) => void;
-}
+import { CreateProgramModalProps } from '@/types';
 
 const CreateProgramModal: React.FC<CreateProgramModalProps> = ({ isOpen, onClose, onProgramCreated }) => {
     const [name, setName] = useState('');
