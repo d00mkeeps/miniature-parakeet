@@ -8,6 +8,12 @@ export default function Header({ children }: { children: React.ReactNode }) {
         <Button href="/home" variant="primary" size="small">
           Home
         </Button>
+        <Button href="/profile" variant="primary" size="small">
+          Profile
+        </Button>
+        <Button href="/program" variant="primary" size="small">
+          Programs
+        </Button>
       </div>
     </nav>
   );

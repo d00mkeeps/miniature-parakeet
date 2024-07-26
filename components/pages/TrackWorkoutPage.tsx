@@ -2,7 +2,7 @@ import React from 'react';
 import dynamic from 'next/dynamic';
 
 // Dynamically import WorkoutTracker with client-side rendering
-const WorkoutTracker = dynamic(() => import('../organisms/workout/WorkoutTracker'), { ssr: false });
+const WorkoutTracker = dynamic(() => import('../workout/organisms/WorkoutTracker'), { ssr: false });
 
 export default function TrackWorkoutPage() {
   return (

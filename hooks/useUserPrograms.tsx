@@ -1,4 +1,3 @@
-// hooks/useUserPrograms.ts
 import { useState, useEffect, useCallback } from 'react';
 import { useUser } from '@/context/UserContext';
 import { createClient } from '@/utils/supabase/client';

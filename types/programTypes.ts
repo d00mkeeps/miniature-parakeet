@@ -4,5 +4,5 @@ export interface Program {
     description: string | null;
     user_id: string;
     time: string;
-    // Add any other fields your programs table has
+    
   }

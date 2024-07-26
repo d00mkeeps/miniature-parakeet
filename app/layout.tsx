@@ -2,8 +2,8 @@ import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 import { UserProvider } from "@/context/UserContext";
 import { UserExercisesProvider } from "@/context/UserExercisesContext";
-import Header from '@/components/molecules/Header';
-import AuthButton from '@/components/atoms/AuthButton';
+import Header from '@/components/public/molecules/Header';
+import AuthButton from '@/components/auth/AuthButton';
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -11,8 +11,8 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "Next.js and Supabase Starter Kit",
-  description: "The fastest way to build apps with Next.js and Supabase",
+  title: "TrainSmart",
+  description: "The future of coaching, at your fingertips.",
 };
 
 export default function RootLayout({

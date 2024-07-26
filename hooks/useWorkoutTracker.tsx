@@ -1,4 +1,3 @@
-// useWorkoutTracker.ts
 import { useState, useCallback } from 'react';
 import { TrackedExercise, Set } from '@/types';
 import { uploadWorkout } from '@/utils/supabaseFunctions/workoutFunctions';

@@ -52,5 +52,5 @@ export interface CreateProgramModalProps {
 
 export interface ProgramCardProps {
   program: Program;
-  onDelete: (id: string) => void;  // Changed to string assuming UUID
+  onDelete: (id: string) => void;  
 }

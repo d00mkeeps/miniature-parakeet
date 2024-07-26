@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useUser } from "@/context/UserContext";
-import { WelcomeModal } from "@/components/organisms/misc/WelcomeModal";
+import { WelcomeModal } from "@/components/public/organisms/WelcomeModal";
 import Button from "../public/atoms/Button";
-import TimeframeParser from "@/components/organisms/backend/TimeframeParser";
+import TimeframeParser from "@/components/backend/TimeframeParser";
 
 export default function HomePageContent() {
   const { userProfile, loading } = useUser();

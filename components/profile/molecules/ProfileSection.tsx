@@ -1,4 +1,3 @@
-// components/molecules/ProfileSection.tsx
 import { ProfileField } from '../atoms/ProfileField';
 import styles from '@/styles/molecules.module.css';
 import { UserProfile } from '@/types';
@@ -14,7 +13,12 @@ export const ProfileSection = ({ userProfile }: ProfileSectionProps) => (
     <ProfileField label="Display Name" value={userProfile.display_name} />
     <ProfileField label="Measurement System" value={userProfile.is_imperial ? 'Imperial' : 'Metric'} />
     <ProfileField label="User ID" value={userProfile.user_id} />
-    <ProfileField label="Training History" value={userProfile.training_history} multiline />
-    <ProfileField label="Goals" value={userProfile.goals} multiline />
+    <div className={styles.multilineField}>
+      <ProfileField label="Training History" value={userProfile.training_history} multiline />
+    </div>
+    <div className={styles.multilineField}>
+      <ProfileField label="Goals" value={userProfile.goals} multiline />
+    </div>
+
   </div>
 );

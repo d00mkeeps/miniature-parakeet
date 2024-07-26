@@ -1,9 +1,9 @@
 // WorkoutTracker.tsx
 'use client';
 import React, { useState } from 'react';
-import ExerciseDiv from '../exercise/ExerciseDiv';
+import ExerciseDiv from '../../exercise/organisms/ExerciseDiv';
 import Button from '@/components/public/atoms/Button';
-import AddExerciseModal from '../exercise/AddExerciseModal';
+import AddExerciseModal from '../../exercise/organisms/AddExerciseModal';
 import { useWorkoutTracker } from '@/hooks/useWorkoutTracker';
 
 const WorkoutTracker: React.FC = () => {

@@ -1,12 +1,11 @@
 // components/organisms/UserProfileDisplay.tsx
 'use client'
 import { useUser } from '@/context/UserContext';
-import { PageTitle } from '../atoms/PageTitle';
+import { PageTitle } from '../../public/atoms/PageTitle';
 import { LoadingSpinner } from '@/components/public/atoms/LoadingSpinner';
 import { ErrorMessage } from '@/components/public/atoms/ErrorMessage';
 import { ProfileSection } from '../molecules/ProfileSection';
 import styles from '@/styles/organisms.module.css';
-import { UserProfile } from '@/types'; // Adjust the import path as needed
 
 export const UserProfileDisplay = () => {
   const { userProfile, loading, error } = useUser();

@@ -1,6 +1,6 @@
 import React from 'react';
 import { ProgramListProps } from '@/types';
-import ProgramCard from '@/components/molecules/program/ProgramCard';
+import ProgramCard from '@/components/program/molecules/ProgramCard';
 import styles from '@/styles/organisms.module.css';
 
 const ProgramList: React.FC<ProgramListProps> = ({ programs, onDelete }) => (
