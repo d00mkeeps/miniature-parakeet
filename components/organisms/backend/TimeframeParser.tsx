@@ -61,7 +61,7 @@ const TimeframeParser = () => {
           ref={textareaRef}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Enter your query (e.g., 'Please look over my workout history over the last 6 weeks and give me tips to increase my bench press.')"
+          placeholder="Talk to the TrainSmart coach!"
           className={styles.textarea}
           rows={1}
         />

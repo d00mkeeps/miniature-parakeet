@@ -4,7 +4,7 @@ import { useUser } from '@/context/UserContext';
 import Button from '@/components/atoms/Button';
 import { Heading } from '@/components/atoms/Typography';
 import styles from '@/styles/molecules.module.css';
-import { insertProgram } from '@/supabaseFunctions/programFunctions';
+import { insertProgram } from '@/utils/supabaseFunctions/programFunctions';
 import { CreateProgramModalProps } from '@/types';
 
 const CreateProgramModal: React.FC<CreateProgramModalProps> = ({ isOpen, onClose, onProgramCreated }) => {

@@ -1,7 +1,7 @@
 // useWorkoutTracker.ts
 import { useState, useCallback } from 'react';
 import { TrackedExercise, Set } from '@/types';
-import { uploadWorkout } from '@/supabaseFunctions/workoutFunctions';
+import { uploadWorkout } from '@/utils/supabaseFunctions/workoutFunctions';
 
 const generateUniqueId = () => Math.random().toString(36).substr(2, 9);
 

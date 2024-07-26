@@ -179,6 +179,7 @@
 .title {
   text-align: center;
   margin-bottom: 20px;
+  font-size: x-large;
 }
 
 .form {
@@ -239,3 +240,16 @@
   font-family: Arial, sans-serif;
   line-height: 1.6;
 }
+
+.profileInfo {
+  display: grid;
+  gap: 10px;
+}
+
+.preWrapped {
+  white-space: pre-wrap;
+  background-color: #222222;
+  padding: 10px;
+  border-radius: 4px;
+}
+

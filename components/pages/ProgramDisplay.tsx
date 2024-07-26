@@ -7,7 +7,7 @@ import { Heading, Paragraph } from '@/components/atoms/Typography';
 import ProgramList from '@/components/organisms/program/ProgramList';
 import CreateProgramModal from '@/components/molecules/program/CreateProgramModal';
 import styles from '@/styles/pages.module.css';
-import { deleteProgram } from '@/supabaseFunctions/programFunctions';
+import { deleteProgram } from '@/utils/supabaseFunctions/programFunctions';
 
 const ProgramDisplayPage: React.FC = () => {
   useUser();

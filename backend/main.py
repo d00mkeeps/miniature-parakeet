@@ -9,7 +9,7 @@ from dateutil.relativedelta import relativedelta
 from supabase import create_client, Client
 import anthropic
 
-# Initialization code
+# Initialization
 load_dotenv()
 
 supabase_url: str = os.getenv("SUPABASE_URL")
@@ -40,11 +40,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Logging setup
+# Logging init
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-# Parsing
+# Timeframe parsing
 class TimeframeRequest(BaseModel):
     timeframe: str
     user_id: int
@@ -119,6 +119,8 @@ def parse_timeframe(timeframe_string: str):
     logger.warning("No matching pattern found, using default timeframe")
     return (now - timedelta(days=30)).date(), now.date()
 
+# Formatting the retrieved set data
+
 def format_set_data(set_data):
     try:
         parsed_data = json.loads(set_data) if isinstance(set_data, str) else set_data
@@ -180,6 +182,8 @@ Exercises:
     
     return formatted_output.strip()
 
+# Fetch the relevant workouts from supabase
+
 def fetch_workout_data(user_id: int, start_date: datetime, end_date: datetime, original_query: str, training_history: str, goals: str):
     try:
         workouts_response = supabase.table("workouts").select("*").eq("user_id", user_id).gte("created_at", start_date.isoformat()).lte("created_at", end_date.isoformat()).execute()
@@ -209,12 +213,16 @@ def fetch_workout_data(user_id: int, start_date: datetime, end_date: datetime, o
         logger.error(f"Error fetching workout data: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error fetching workout data: {str(e)}")
 
+# Send query bundle to LLM, handle response
+
 def get_ai_coaching_advice(formatted_workout_data: str) -> str:
     message = anthropic_client.messages.create(
         model="claude-3-5-sonnet-20240620",
         max_tokens=1000,
-        temperature=0,
-        system="You are a world-class coach. Provide useful training advice based on the user's workout data and context. Be concise and specific. Once you've formulated a high-quality response that incorporates the user data in a meaningful way, then return your response to the query. It's very important for you to respond with evidence based thoughts.",
+        temperature=1,
+
+        # Provide a template for the coach to follow in a response
+        system="You are a world-class strength and conditioning coach. You are to analyse the client's query, along with their workout data and context, to provide a thoughtful response. You should response in a friendly, professional tone and use evidence to back up your statements. \n\n You should format your response into two distinct sections: Analysis of the user's training history, a brief overview of some general steps the client can take to fulfil their query going forward. It's important you only discuss a client's diet or recovery patterns if you have been provided adequate context.",
         messages=[
             {
                 "role": "user",
@@ -229,6 +237,8 @@ def get_ai_coaching_advice(formatted_workout_data: str) -> str:
     )
     return message.content
 
+# Return response to frontend (TSX app)
+
 @app.post("/parse_timeframe")
 async def parse_timeframe_endpoint(request: TimeframeRequest):
     logger.info(f"Received query: {request.timeframe} for user_id: {request.user_id}")
@@ -236,7 +246,7 @@ async def parse_timeframe_endpoint(request: TimeframeRequest):
     start_date, end_date = parse_timeframe(request.timeframe)
     
     try:
-        formatted_workout_data = fetch_workout_data(
+        query_bundle = fetch_workout_data(
             request.user_id, 
             start_date, 
             end_date, 
@@ -245,10 +255,10 @@ async def parse_timeframe_endpoint(request: TimeframeRequest):
             request.goals
         )
         
-        ai_advice = get_ai_coaching_advice(formatted_workout_data)
+        ai_advice = get_ai_coaching_advice(query_bundle)
         
         response = {
-            "formatted_data": formatted_workout_data,
+            "formatted_data": query_bundle,
             "ai_advice": ai_advice
         }
         logger.info(f"Responding with: {response}")
