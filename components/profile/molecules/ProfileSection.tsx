@@ -1,7 +1,7 @@
 // components/molecules/ProfileSection.tsx
 import { ProfileField } from '../atoms/ProfileField';
 import styles from '@/styles/molecules.module.css';
-import { UserProfile } from '@/types'; // Adjust the import path as needed
+import { UserProfile } from '@/types';
 
 interface ProfileSectionProps {
   userProfile: UserProfile;

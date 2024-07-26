@@ -2,8 +2,8 @@
 import React, { useState } from 'react';
 import { useUser } from '@/context/UserContext';
 import { useUserPrograms } from '@/hooks/useUserPrograms';
-import Button from '@/components/atoms/Button';
-import { Heading, Paragraph } from '@/components/atoms/Typography';
+import Button from '@/components/public/atoms/Button';
+import { Heading, Paragraph } from '@/components/public/atoms/Typography';
 import ProgramList from '@/components/organisms/program/ProgramList';
 import CreateProgramModal from '@/components/molecules/program/CreateProgramModal';
 import styles from '@/styles/pages.module.css';

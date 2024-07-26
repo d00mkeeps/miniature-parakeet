@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ExerciseSelectField from '@/components/molecules/exercise/ExerciseSelectField';
-import Button from '@/components/atoms/Button';
+import Button from '@/components/public/atoms/Button';
 import { AddExerciseModalProps, Exercise, InputValues } from '@/types';
 import styles from '@/styles/organisms.module.css';
 

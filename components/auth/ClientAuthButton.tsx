@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic"
 
-const AuthButton = dynamic(() => import('../atoms/AuthButton'), {
+const AuthButton = dynamic(() => import('./AuthButton'), {
     ssr: false, 
     loading: () => <div>Loading...</div>
 })

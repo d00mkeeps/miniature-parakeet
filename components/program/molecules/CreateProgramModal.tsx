@@ -1,8 +1,8 @@
 // components/molecules/CreateProgramModal.tsx
 import React, { useState } from 'react';
 import { useUser } from '@/context/UserContext';
-import Button from '@/components/atoms/Button';
-import { Heading } from '@/components/atoms/Typography';
+import Button from '@/components/public/atoms/Button';
+import { Heading } from '@/components/public/atoms/Typography';
 import styles from '@/styles/molecules.module.css';
 import { insertProgram } from '@/utils/supabaseFunctions/programFunctions';
 import { CreateProgramModalProps } from '@/types';

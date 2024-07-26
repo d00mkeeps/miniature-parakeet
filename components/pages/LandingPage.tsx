@@ -1,4 +1,4 @@
-import Button from "../atoms/Button";
+import Button from "../public/atoms/Button";
 
 export default function LandingPage() {
   return (

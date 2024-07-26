@@ -2,7 +2,7 @@
 'use client';
 import React, { useState } from 'react';
 import ExerciseDiv from '../exercise/ExerciseDiv';
-import Button from '@/components/atoms/Button';
+import Button from '@/components/public/atoms/Button';
 import AddExerciseModal from '../exercise/AddExerciseModal';
 import { useWorkoutTracker } from '@/hooks/useWorkoutTracker';
 

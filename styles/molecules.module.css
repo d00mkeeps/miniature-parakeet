@@ -236,3 +236,22 @@
   gap: 0.5rem;
   margin-top: 1rem;
 }
+
+/* styles/molecules.module.css */
+.profileSection {
+  border: 1px solid #444; /* Dark grey border */
+  border-radius: 8px; /* Rounded corners for a nicer look */
+  padding: 20px;
+  margin-top: 20px;
+  background-color: #222222; /* Light background for contrast */
+}
+
+/* You might want to add some spacing between fields */
+.profileSection > div {
+  margin-bottom: 10px;
+}
+
+/* Remove margin from the last child to avoid extra space at the bottom */
+.profileSection > div:last-child {
+  margin-bottom: 0;
+}

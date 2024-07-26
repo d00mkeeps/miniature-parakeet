@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useUser } from "@/context/UserContext";
 import { WelcomeModal } from "@/components/organisms/misc/WelcomeModal";
-import Button from "../atoms/Button";
+import Button from "../public/atoms/Button";
 import TimeframeParser from "@/components/organisms/backend/TimeframeParser";
 
 export default function HomePageContent() {

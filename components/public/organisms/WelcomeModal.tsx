@@ -3,7 +3,7 @@ import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useUser } from "@/context/UserContext";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import Button from "@/components/atoms/Button";
+import Button from "@/components/public/atoms/Button";
 import { Input } from "@/components/atoms/Input";
 import { Label } from "@/components/atoms/Label";
 import { WelcomeModalProps, FormData } from "@/types";

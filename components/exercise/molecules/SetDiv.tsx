@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Button from '@/components/atoms/Button';
+import Button from '@/components/public/atoms/Button';
 import { SetDivProps } from '@/types';
 import styles from '@/styles/molecules.module.css';
 import { WeightInputField, RepsInputField, DurationInputField, DistanceInputField } from './inputFields';

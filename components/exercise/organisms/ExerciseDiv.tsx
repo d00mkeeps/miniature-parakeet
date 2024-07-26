@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Button from '@/components/atoms/Button';
+import Button from '@/components/public/atoms/Button';
 import SetDiv from '@/components/molecules/exercise/SetDiv';
 import { Set, ExerciseProps } from '@/types';
 import styles from '@/styles/organisms.module.css';

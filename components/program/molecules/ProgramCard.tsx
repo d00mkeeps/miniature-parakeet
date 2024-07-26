@@ -1,7 +1,7 @@
 import React from 'react';
 import { ProgramCardProps } from '@/types';
-import Button from '@/components/atoms/Button';
-import { Heading, Paragraph } from '@/components/atoms/Typography';
+import Button from '@/components/public/atoms/Button';
+import { Heading, Paragraph } from '@/components/public/atoms/Typography';
 import { PencilIcon } from '@heroicons/react/24/solid';
 import styles from '@/styles/molecules.module.css';
 
