@@ -4,8 +4,8 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useUser } from "@/context/UserContext";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Button from "@/components/public/atoms/Button";
-import { Input } from "@/components/atoms/Input";
-import { Label } from "@/components/atoms/Label";
+import { Input } from "../atoms/Input";
+import { Label } from "../atoms/Label";
 import { WelcomeModalProps, FormData } from "@/types";
 
 export const WelcomeModal: React.FC<WelcomeModalProps> = ({

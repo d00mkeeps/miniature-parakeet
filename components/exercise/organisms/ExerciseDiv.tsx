@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Button from '@/components/public/atoms/Button';
-import SetDiv from '@/components/molecules/exercise/SetDiv';
+import SetDiv from '../molecules/SetDiv';
 import { Set, ExerciseProps } from '@/types';
 import styles from '@/styles/organisms.module.css';
 import { useUserExercises } from '@/context/UserExercisesContext';

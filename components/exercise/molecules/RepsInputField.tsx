@@ -1,6 +1,6 @@
 import React from 'react';
-import { Input } from '@/components/atoms/Input';
-import { Label } from '@/components/atoms/Label';
+import { Input } from '@/components/public/atoms/Input';
+import { Label } from '@/components/public/atoms/Label';
 import styles from '@/styles/molecules.module.css'
 import { RepsInputFieldProps } from '@/types';
 
