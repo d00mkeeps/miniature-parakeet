@@ -1,4 +1,3 @@
-// components/atoms/PageTitle.tsx
 import styles from '@/styles/atoms.module.css';
 
 interface PageTitleProps {

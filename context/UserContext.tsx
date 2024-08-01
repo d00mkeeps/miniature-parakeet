@@ -52,6 +52,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
       }
     };
 
+    
+
     const startFetchingProfile = () => {
       fetchUserProfile();
       retryInterval = setInterval(fetchUserProfile, 1000);
@@ -67,9 +69,30 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 
   console.log("UserProvider state:", { userProfile, loading, error });
 
+  
+  const updateProfile = async (field: keyof UserProfile, value: string | boolean) => {
+    if (!userProfile) return false;
+
+    try {
+      const { data, error } = await supabase
+        .from("user_profiles")
+        .update({ [field]: value })
+        .eq("user_id", userProfile.user_id);
+
+      if (error) throw error;
+
+      setUserProfile(prev => prev ? { ...prev, [field]: value } : null);
+      return true;
+    } catch (err) {
+      console.error("Error updating profile:", err);
+      setError(err instanceof Error ? err : new Error("An unknown error occurred"));
+      return false;
+    }
+  };
+
   return (
     <UserContext.Provider
-      value={{ userProfile, setUserProfile, loading, error }}
+      value={{ userProfile, setUserProfile, loading, error, updateProfile }}
     >
       {children}
     </UserContext.Provider>

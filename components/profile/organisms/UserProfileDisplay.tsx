@@ -1,4 +1,5 @@
 // components/organisms/UserProfileDisplay.tsx
+
 'use client'
 import { useUser } from '@/context/UserContext';
 import { PageTitle } from '../../public/atoms/PageTitle';

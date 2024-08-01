@@ -116,3 +116,7 @@
   max-height: 150px;
   overflow-y: auto;
 }
+
+.pageTitle {
+  font-size: x-large;
+}

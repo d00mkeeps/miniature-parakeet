@@ -13,13 +13,13 @@ interface UserProfile {
   goals: string | null;
 }
 
-
 export interface UserContextType {
-    userProfile: UserProfile | null;
-    setUserProfile: React.Dispatch<React.SetStateAction<UserProfile | null>>;
-    loading: boolean;
-    error: Error | null;
-  }
+  userProfile: UserProfile | null;
+  setUserProfile: React.Dispatch<React.SetStateAction<UserProfile | null>>;
+  loading: boolean;
+  error: Error | null;
+  updateProfile: (field: keyof UserProfile, value: string | boolean) => Promise<boolean>;
+};
 
 export interface UserExercisesContextType {
   exercises: Exercise[];

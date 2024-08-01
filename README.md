@@ -2,7 +2,7 @@
 
 ### TODO:
 
-- Add profile editing
-- Add program editing
-- Improve system prompt for LLM coach
-- Organize types and styles
+Fix profile editing
+
+- Styling is bad on ProfileField, textarea edit input
+- Ensure boolean input for measurement system
