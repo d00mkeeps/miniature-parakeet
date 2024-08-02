@@ -1,8 +1,6 @@
 # supercoach
 
-### TODO:
+## TODO:
 
-Fix profile editing
-
-- Styling is bad on ProfileField, textarea edit input
-- Ensure boolean input for measurement system
+- Split up backend in a way that makes sense
+- Organise types

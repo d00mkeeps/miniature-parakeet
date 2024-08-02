@@ -6,6 +6,7 @@ import styles from '@/styles/molecules.module.css';
 import { UserProfile } from '@/types';
 import { useUser } from '@/context/UserContext';
 
+
 interface ProfileSectionProps {
   userProfile: UserProfile;
 }

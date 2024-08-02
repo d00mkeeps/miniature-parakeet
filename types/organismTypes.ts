@@ -22,8 +22,9 @@ export interface Set {
 
 export interface ExerciseProps {
   index: number;
-  exerciseId: number; // Regular id for fetching exercise data
-  uniqueId: string;   // Unique id for workout-specific operations
+  exerciseId: number; 
+  
+  uniqueId: string;  
   onDelete: (uniqueId: string) => void;
 }
 
@@ -37,8 +38,8 @@ export interface FormData {
     firstName: string;
     lastName: string;
     isImperial: boolean;
-    about: string | null;
-    goals: string | null;
+    training_history: string | null;
+    goals?: string | null;
   }
 
   export interface TrackedExercise {

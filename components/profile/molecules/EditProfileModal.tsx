@@ -1,4 +1,4 @@
-// components/profile/molecules/EditProfileFieldModal.tsx
+
 
 import React, { useState, useEffect } from 'react';
 import Button from '@/components/public/atoms/Button';
@@ -13,7 +13,7 @@ interface EditProfileFieldModalProps {
   multiline?: boolean;
 }
 
-const EditProfileFieldModal: React.FC<EditProfileFieldModalProps> = ({
+const EditProfileModal: React.FC<EditProfileFieldModalProps> = ({
   isOpen,
   onClose,
   onConfirm,
@@ -40,12 +40,13 @@ const EditProfileFieldModal: React.FC<EditProfileFieldModalProps> = ({
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
         <h2 className={styles.modalTitle}>Edit {fieldName}</h2>
-        <div className={styles.inputFieldsContainer}>
+        <div className={styles.formGroup}>
           {multiline ? (
             <textarea
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              className={styles.textArea}
+              className={styles.descriptiontextarea}
+              placeholder={`Enter ${fieldName}`}
             />
           ) : (
             <input
@@ -53,10 +54,11 @@ const EditProfileFieldModal: React.FC<EditProfileFieldModalProps> = ({
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               className={styles.input}
+              placeholder={`Enter ${fieldName}`}
             />
           )}
         </div>
-        <div className={styles.actionContainer}>
+        <div className={styles.buttongroup}>
           <Button onClick={onClose} variant="secondary" className={styles.marginRight}>
             Back
           </Button>
@@ -69,4 +71,4 @@ const EditProfileFieldModal: React.FC<EditProfileFieldModalProps> = ({
   );
 };
 
-export default EditProfileFieldModal;
+export default EditProfileModal;

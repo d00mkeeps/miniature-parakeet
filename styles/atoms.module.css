@@ -97,26 +97,26 @@
     margin-bottom: 0.5rem;
   }
 
-  /* styles/atoms.module.css */
-.profileField {
-  margin-bottom: 10px;
-}
-
-.preWrapped {
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  font-family: inherit;
-  margin: 0;
-}
-
-.multiline {
-  background-color: #222222;
-  padding: 10px;
-  border-radius: 4px;
-  max-height: 150px;
-  overflow-y: auto;
-}
-
-.pageTitle {
-  font-size: x-large;
-}
+  .profileField {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+  }
+  
+  .profileField strong {
+    margin-right: 0.5rem;
+  }
+  
+  .editButton {
+    margin-left: 50px;
+  }
+  
+  .preWrapped {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+  
+  .multiline {
+    display: block;
+    margin-top: 0.25rem;
+  }

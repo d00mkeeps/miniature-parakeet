@@ -36,7 +36,9 @@ export const ProfileField: React.FC<ProfileFieldProps> = ({ label, field, value,
       ) : (
         <span>{displayValue || 'Not set'}</span>
       )}
-      <Button onClick={handleEdit} variant="secondary" size="small">Edit</Button>
+      <Button onClick={handleEdit} variant="secondary" size="small" className={styles.editButton}>
+        Edit
+      </Button>
       <EditProfileFieldModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

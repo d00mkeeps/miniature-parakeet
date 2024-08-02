@@ -1,12 +1,11 @@
-// components/other/WelcomeModal.tsx
-import React from "react";
+import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useUser } from "@/context/UserContext";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Button from "@/components/public/atoms/Button";
 import { Input } from "../atoms/Input";
 import { Label } from "../atoms/Label";
-import { WelcomeModalProps, FormData } from "@/types";
+import { WelcomeModalProps, FormData, UserProfile } from "@/types";
 
 export const WelcomeModal: React.FC<WelcomeModalProps> = ({
   isOpen,
@@ -14,57 +13,124 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
 }) => {
   const { userProfile, setUserProfile } = useUser();
   const supabase = createClientComponentClient();
+  const [currentSlide, setCurrentSlide] = useState(1);
+  const [userInfo, setUserInfo] = useState<Omit<FormData, 'goal' | 'trainingHistory'>>({
+    displayName: "",
+    firstName: "",
+    lastName: "",
+    isImperial: false,
+    training_history: "",
+  });
+  const [trainingHistory, setTrainingHistory] = useState("");
+  const [initialGoal, setInitialGoal] = useState("");
+  const [improvedGoal, setImprovedGoal] = useState("");
+
   const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>({
+    register: registerUserInfo,
+    handleSubmit: handleSubmitUserInfo,
+    formState: { errors: userInfoErrors },
+  } = useForm<Omit<FormData, 'goal' | 'trainingHistory'>>({
+    defaultValues: userInfo,
+  });
+
+  const {
+    register: registerTrainingHistory,
+    handleSubmit: handleSubmitTrainingHistory,
+    formState: { errors: trainingHistoryErrors },
+  } = useForm<{ trainingHistory: string }>({
     defaultValues: {
-      displayName: "",
-      firstName: "",
-      lastName: "",
-      isImperial: false,
-      about: "",
-      goals: ""
+      trainingHistory: "",
+    },
+  });
+
+  const {
+    register: registerGoal,
+    handleSubmit: handleSubmitGoal,
+    formState: { errors: goalErrors },
+  } = useForm<{ goal: string }>({
+    defaultValues: {
+      goal: "",
     },
   });
 
   if (!isOpen || !userProfile) return null;
 
-  const onSubmit: SubmitHandler<FormData> = async (data) => {
-    console.log("Submitting data to Supabase:", data);
+  const onSubmitUserInfo: SubmitHandler<Omit<FormData, 'goal' | 'trainingHistory'>> = (data) => {
+    setUserInfo(data);
+    setCurrentSlide(2);
+  };
 
+  const onSubmitTrainingHistory: SubmitHandler<{ trainingHistory: string }> = (data) => {
+    setTrainingHistory(data.trainingHistory);
+    setCurrentSlide(3);
+  };
+
+  const callImproveGoalAPI = async (initialGoal: string, userProfile: UserProfile) => {
     try {
-      const { data: updateData, error } = await supabase
+      const response = await fetch('/api/improve_goal', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: userProfile.user_id,
+          initial_goal: initialGoal,
+          training_history: userProfile.training_history,
+          current_goals: userProfile.goals
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to improve goal');
+      }
+
+      const data = await response.json();
+      return data.improved_goal;
+    } catch (error) {
+      console.error('Error improving goal:', error);
+      throw error;
+    }
+  };
+
+  const onSubmitGoal: SubmitHandler<{ goal: string }> = async (data) => {
+    setInitialGoal(data.goal);
+    
+    try {
+      const improvedGoal = await callImproveGoalAPI(data.goal, userProfile);
+      setImprovedGoal(improvedGoal);
+      setCurrentSlide(4); // Move to a new slide for goal confirmation
+    } catch (error) {
+      console.error('Error improving goal:', error);
+      // Handle error (e.g., show error message to user)
+    }
+  };
+
+  const handleSaveGoal = async () => {
+    try {
+      const { error } = await supabase
         .from("user_profiles")
         .update({
-          display_name: data.displayName,
-          first_name: data.firstName || null,
-          last_name: data.lastName || null,
-          is_imperial: data.isImperial,
-          about: data.about,
-          goals: data.goals
+          display_name: userInfo.displayName,
+          first_name: userInfo.firstName || null,
+          last_name: userInfo.lastName || null,
+          is_imperial: userInfo.isImperial,
+          training_history: trainingHistory,
+          goals: improvedGoal
         })
         .eq("auth_user_uuid", userProfile.auth_user_uuid);
 
-      console.log("Supabase update response:", { data: updateData, error });
-
       if (error) throw error;
 
-      console.log("Supabase update successful");
-
-      // Update local state
       setUserProfile({
         ...userProfile,
-        display_name: data.displayName,
-        first_name: data.firstName || null,
-        last_name: data.lastName || null,
-        is_imperial: data.isImperial,
-        training_history: data.about,
-        goals: data.goals
+        display_name: userInfo.displayName,
+        first_name: userInfo.firstName || null,
+        last_name: userInfo.lastName || null,
+        is_imperial: userInfo.isImperial,
+        training_history: trainingHistory,
+        goals: improvedGoal
       });
 
-      console.log("Local state updated");
       onClose();
     } catch (error) {
       console.error("Error updating user profile:", error);
@@ -78,85 +144,108 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
         <h2 className="text-2xl font-bold mb-4 text-gray-900">
           Welcome to SuperCoach!
         </h2>
-        <p className="mb-6 text-gray-900 text-lg">
-          Let's get to know each other a little better...
-        </p>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="mb-4">
-            <Label htmlFor="displayName">Display Name</Label>
-            <Input
-              id="displayName"
-              {...register("displayName", {
-                required: "Display name is required",
-              })}
-              className="w-full p-2 border rounded bg-gray-800"
-              placeholder="kingjohn21"
-            />
-            {errors.displayName && (
-              <span className="text-red-500">{errors.displayName.message}</span>
-            )}
-          </div>
-          <div className="mb-4">
-            <Label htmlFor="firstName">First Name</Label>
-            <Input
-              id="firstName"
-              {...register("firstName")}
-              className="w-full p-2 border rounded bg-gray-800"
-              placeholder="John"
-            />
-          </div>
-          <div className="mb-4">
-            <Label htmlFor="lastName">Last Name</Label>
-            <Input
-              id="lastName"
-              {...register("lastName")}
-              className="w-full p-2 border rounded bg-gray-800"
-              placeholder="Doe"
-            />
-          </div>
-
-          <div className="mb-4">
-            <Label htmlFor="goals">Goals</Label>
+        {currentSlide === 1 ? (
+          <form onSubmit={handleSubmitUserInfo(onSubmitUserInfo)}>
+            <div className="mb-4">
+              <Label htmlFor="displayName">Display Name</Label>
+              <Input
+                id="displayName"
+                {...registerUserInfo("displayName", { required: "Display name is required" })}
+                className="w-full p-2 border rounded bg-gray-800"
+                placeholder="kingjohn21"
+              />
+              {userInfoErrors.displayName && (
+                <span className="text-red-500">{userInfoErrors.displayName.message}</span>
+              )}
+            </div>
+            <div className="mb-4">
+              <Label htmlFor="firstName">First Name</Label>
+              <Input
+                id="firstName"
+                {...registerUserInfo("firstName")}
+                className="w-full p-2 border rounded bg-gray-800"
+                placeholder="John"
+              />
+            </div>
+            <div className="mb-4">
+              <Label htmlFor="lastName">Last Name</Label>
+              <Input
+                id="lastName"
+                {...registerUserInfo("lastName")}
+                className="w-full p-2 border rounded bg-gray-800"
+                placeholder="Doe"
+              />
+            </div>
+            <div className="mb-4">
+              <Label htmlFor="isImperial">
+                <input
+                  id="isImperial"
+                  type="checkbox"
+                  {...registerUserInfo("isImperial")}
+                  className="mr-2"
+                />
+                Use Imperial System
+              </Label>
+            </div>
+            <Button type="submit" variant="primary" size="large" className="w-full mt-4">
+              Next
+            </Button>
+          </form>
+        ) : currentSlide === 2 ? (
+          <form onSubmit={handleSubmitTrainingHistory(onSubmitTrainingHistory)}>
+            <div className="mb-4">
+              <Label htmlFor="trainingHistory">Your Training History</Label>
+              <textarea
+                id="trainingHistory"
+                {...registerTrainingHistory("trainingHistory", { required: "Training history is required" })}
+                className="w-full p-2 border rounded bg-gray-800"
+                rows={5}
+                placeholder="Tell us about your training experience..."
+              ></textarea>
+              {trainingHistoryErrors.trainingHistory && (
+                <span className="text-red-500">{trainingHistoryErrors.trainingHistory.message}</span>
+              )}
+            </div>
+            <Button type="submit" variant="primary" size="large" className="w-full mt-4">
+              Next
+            </Button>
+          </form>
+        ) : currentSlide === 3 ? (
+          <form onSubmit={handleSubmitGoal(onSubmitGoal)}>
+            <div className="mb-4">
+              <Label htmlFor="goal">Your Goal</Label>
+              <textarea
+                id="goal"
+                {...registerGoal("goal", { required: "Goal is required" })}
+                className="w-full p-2 border rounded bg-gray-800"
+                rows={3}
+                placeholder="I want to do a muscle up as quickly as possible"
+              ></textarea>
+              {goalErrors.goal && (
+                <span className="text-red-500">{goalErrors.goal.message}</span>
+              )}
+            </div>
+            <Button type="submit" variant="primary" size="large" className="w-full mt-4">
+              Improve Goal
+            </Button>
+          </form>
+        ) : currentSlide === 4 && (
+          <div>
+            <h3>Improved Goal</h3>
+            <p>Our AI coach has suggested the following improved goal based on your input:</p>
+            <p className="font-bold">{improvedGoal}</p>
+            <p>You can edit this goal if you'd like:</p>
             <textarea
-              id="goals"
-              {...register("goals")}
+              value={improvedGoal}
+              onChange={(e) => setImprovedGoal(e.target.value)}
               className="w-full p-2 border rounded bg-gray-800"
               rows={3}
-              placeholder="I want to get healthier!"
-            ></textarea>
-          </div>
-
-          <div className="mb-4">
-            <Label htmlFor="about">About You</Label>
-            <textarea
-              id="about"
-              {...register("about")}
-              className="w-full p-2 border rounded bg-gray-800"
-              placeholder="I've been training for a little while now..."
             />
+            <Button onClick={handleSaveGoal} variant="primary" size="large" className="w-full mt-4">
+              Save Goal
+            </Button>
           </div>
-
-
-          <div className="mb-4">
-            <Label htmlFor="isImperial">
-              <input
-                id="isImperial"
-                type="checkbox"
-                {...register("isImperial")}
-                className="mr-2"
-              />
-              Use Imperial System
-            </Label>
-          </div>
-          <Button
-            type="submit"
-            variant="primary"
-            size="large"
-            className="w-full mt-4"
-          >
-            Save
-          </Button>
-        </form>
+        )}
       </div>
     </div>
   );

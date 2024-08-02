@@ -216,12 +216,51 @@
 }
 
 .descriptiontextarea {
-  resize: vertical;
-  min-height: 6rem;
-  background-color: #2d3748;
+  width: 100%;
+  min-height: 100px;
+  padding: 10px;
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.5;
   color: #ffffff;
+  background-color: #2d3748;
   border: 1px solid #4a5568;
+  border-radius: 4px;
+  resize: vertical;
+  transition: border-color 0.3s ease;
+}
 
+.descriptiontextarea:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.descriptiontextarea::placeholder {
+  color: #718096;
+}
+
+.input {
+  width: 100%;
+  padding: 10px;
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #ffffff;
+  background-color: #2d3748;
+  border: 1px solid #4a5568;
+  border-radius: 4px;
+  transition: border-color 0.3s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.input::placeholder {
+  color: #718096;
 }
 
 .buttonGroup {
@@ -250,4 +289,29 @@
 
 .multilineField {
   margin-top: 20px;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 10px;
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #333;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+  transition: border-color 0.3s ease;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.textarea::placeholder {
+  color: #999;
 }

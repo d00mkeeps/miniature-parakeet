@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from supabase import create_client, Client
 import anthropic
+from backend.improve_goal import get_improved_goal, GoalSettingRequest
 
 # Initialization
 load_dotenv()
@@ -239,6 +240,7 @@ def get_ai_coaching_advice(formatted_workout_data: str) -> str:
 
 # Return response to frontend (TSX app)
 
+
 @app.post("/parse_timeframe")
 async def parse_timeframe_endpoint(request: TimeframeRequest):
     logger.info(f"Received query: {request.timeframe} for user_id: {request.user_id}")
@@ -267,6 +269,21 @@ async def parse_timeframe_endpoint(request: TimeframeRequest):
         logger.error(f"Error processing request: {str(e)}")
         raise HTTPException(status_code=500, detail="Error processing request")
 
+class GoalSettingRequest(BaseModel):
+    user_id: int
+    initial_goal: str
+    training_history: str
+    current_goals: str
+    
+@app.post("/improve_goal")
+async def improve_goal_endpoint(request: GoalSettingRequest):
+    try:
+        improved_goal = get_improved_goal(request)
+        return {"improved_goal": improved_goal}
+    except Exception as e:
+        logger.error(f"Error processing goal improvement request: {str(e)}")
+        raise HTTPException(status_code=500, detail="Error processing goal improvement request")
+    
 @app.get("/")
 async def root():
     return {"message": "Welcome to the Workout Data API"}
