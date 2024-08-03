@@ -1,5 +1,7 @@
 fastapi
 uvicorn
-python-dateutil
-supabase
+pydantic
 python-dotenv
+anthropic
+supabase
+python-dateutil

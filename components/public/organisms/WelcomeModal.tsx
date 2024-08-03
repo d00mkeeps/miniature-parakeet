@@ -67,7 +67,7 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
 
   const callImproveGoalAPI = async (initialGoal: string, userProfile: UserProfile) => {
     try {
-      const response = await fetch('/api/improve_goal', {
+      const response = await fetch('/api/improve-goal', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -79,11 +79,11 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
           current_goals: userProfile.goals
         }),
       });
-
+  
       if (!response.ok) {
         throw new Error('Failed to improve goal');
       }
-
+  
       const data = await response.json();
       return data.improved_goal;
     } catch (error) {
@@ -101,7 +101,9 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
       setCurrentSlide(4); // Move to a new slide for goal confirmation
     } catch (error) {
       console.error('Error improving goal:', error);
-      // Handle error (e.g., show error message to user)
+      // Update UI to show error message
+      // For example:
+      // setErrorMessage("Failed to improve goal. Please try again.");
     }
   };
 
