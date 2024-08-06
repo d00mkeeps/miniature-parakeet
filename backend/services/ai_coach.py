@@ -41,7 +41,7 @@ Please analyze the user's context and initial goal, then provide an improved, mo
         message = anthropic_client.messages.create(
             model="claude-3-5-sonnet-20240620",
             max_tokens=500,
-            temperature=0.7,
+            temperature=1,
             system="You are an expert strength and conditioning coach specializing in goal setting. Your task is to analyze the user's training history, current goals, and their initial goal to provide a more specific, measurable, achievable, relevant, and time-bound (SMART) goal. Your response should be concise and directly state the improved goal without any additional explanation.",
             messages=[
                 {

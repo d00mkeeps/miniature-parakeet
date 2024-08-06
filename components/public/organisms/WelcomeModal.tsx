@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useUser } from "@/context/UserContext";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import Button from "@/components/public/atoms/Button";
+import Button from "../atoms/Button";
 import { Input } from "../atoms/Input";
 import { Label } from "../atoms/Label";
 import { WelcomeModalProps, FormData, UserProfile } from "@/types";
@@ -67,7 +67,7 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
 
   const callImproveGoalAPI = async (initialGoal: string, userProfile: UserProfile) => {
     try {
-      const response = await fetch('/api/improve-goal', {
+      const response = await fetch('http://localhost:8000/api/improve_goal', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -84,8 +84,7 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
         throw new Error('Failed to improve goal');
       }
   
-      const data = await response.json();
-      return data.improved_goal;
+      return await response.json(); // Return the whole response object
     } catch (error) {
       console.error('Error improving goal:', error);
       throw error;
@@ -96,13 +95,12 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
     setInitialGoal(data.goal);
     
     try {
-      const improvedGoal = await callImproveGoalAPI(data.goal, userProfile);
-      setImprovedGoal(improvedGoal);
+      const improvedGoalResponse = await callImproveGoalAPI(data.goal, userProfile);
+      setImprovedGoal(improvedGoalResponse.text); // Assuming the response has a 'text' field
       setCurrentSlide(4); // Move to a new slide for goal confirmation
     } catch (error) {
       console.error('Error improving goal:', error);
       // Update UI to show error message
-      // For example:
       // setErrorMessage("Failed to improve goal. Please try again.");
     }
   };
@@ -233,21 +231,21 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
           </form>
         ) : currentSlide === 4 && (
           <div>
-            <h3>Improved Goal</h3>
-            <p>Our AI coach has suggested the following improved goal based on your input:</p>
-            <p className="font-bold">{improvedGoal}</p>
-            <p>You can edit this goal if you'd like:</p>
-            <textarea
-              value={improvedGoal}
-              onChange={(e) => setImprovedGoal(e.target.value)}
-              className="w-full p-2 border rounded bg-gray-800"
-              rows={3}
-            />
-            <Button onClick={handleSaveGoal} variant="primary" size="large" className="w-full mt-4">
-              Save Goal
-            </Button>
-          </div>
-        )}
+    <h3>Improved Goal</h3>
+    <p>Our AI coach has suggested the following improved goal based on your input:</p>
+    <p className="font-bold">{improvedGoal}</p>
+    <p>You can edit this goal if you'd like:</p>
+    <textarea
+      value={improvedGoal}
+      onChange={(e) => setImprovedGoal(e.target.value)}
+      className="w-full p-2 border rounded bg-gray-800"
+      rows={3}
+    />
+    <Button onClick={handleSaveGoal} variant="primary" size="large" className="w-full mt-4">
+      Save Goal
+    </Button>
+  </div>
+)}
       </div>
     </div>
   );

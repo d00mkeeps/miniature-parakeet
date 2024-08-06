@@ -12,9 +12,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 app.include_router(timeframe_router, prefix="/api", tags=["timeframe"])
 app.include_router(goals_router, prefix="/api", tags=["goals"])
+print(f"Routes: {[route for route in app.routes]}")
 
 @app.get("/")
 async def root():

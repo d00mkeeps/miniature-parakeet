@@ -9,6 +9,7 @@ router = APIRouter()
 
 @router.post("/parse_timeframe")
 async def parse_timeframe_endpoint(request: TimeframeRequest):
+    logger.info(f"Received request at /parse_timeframe endpoint")
     logger.info(f"Received query: {request.timeframe} for user_id: {request.user_id}")
     
     start_date, end_date = parse_timeframe(request.timeframe)

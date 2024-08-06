@@ -32,7 +32,7 @@ const TimeframeParser = () => {
     }
 
     try {
-      const response = await axios.post('/api/parse-timeframe', { 
+      const response = await axios.post('/api/parse_timeframe', { 
         timeframe: query,
         user_id: userProfile.user_id,
         training_history: userProfile.training_history,
