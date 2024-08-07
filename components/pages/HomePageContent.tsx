@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useUser } from "@/context/UserContext";
-import { WelcomeModal } from "@/components/public/organisms/WelcomeModal";
+import { WelcomeModal } from "@/components/public/organisms/WelcomeModal/WelcomeModal";
 import Button from "../public/atoms/Button";
 import TimeframeParser from "@/components/backend/TimeframeParser";
 

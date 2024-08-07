@@ -90,7 +90,7 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
       throw error;
     }
   };
-
+  
   const onSubmitGoal: SubmitHandler<{ goal: string }> = async (data) => {
     setInitialGoal(data.goal);
     

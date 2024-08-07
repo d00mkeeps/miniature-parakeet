@@ -64,3 +64,29 @@ export interface FormData {
     programs: Program[];
     onDelete: (id: string) => void;
   }
+  export type UserInfoData = {
+    displayName: string;
+    firstName: string;
+    lastName: string;
+    isImperial: boolean;
+  };
+  
+  export type ImprovedGoal = {
+    text: string;
+    type: string;
+  };
+  
+  export enum ModalStep {
+    UserInfo,
+    TrainingHistory,
+    InitialGoal,
+    ImprovedGoal,
+    Confirmation
+  }
+  
+  export type WelcomeModalState = {
+    userInfo: UserInfoData;
+    trainingHistory: string;
+    initialGoal: string;
+    improvedGoal: string;
+  }
