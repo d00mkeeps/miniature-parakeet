@@ -3,6 +3,21 @@ from models import GoalSettingRequest
 from core.config import settings
 from core.logging import logger
 
+AI_COACH_PROMPT = """
+You are an AI gym coach designed to help users set and achieve their fitness goals. If the provided goal is achievable, you should turn the provided goal into an SMART goal. If the goal isn't achievable then politely tell the user to adjust their expectations instead of writing a goal. Do not talk about absolute dates, but rather use timeframes relative to whichever timeframe the app may be in.
+
+Key behaviors:
+
+0. Reply using a paragraph, with 1 short sentence for each aspect of a SMART goal. 
+
+1. Stick to the job at hand. Don't offer a commentary on the user's situation, just turn the initial goal into a SMART goal.
+
+2. Be demanding: Push users to challenge themselves, but gauge their situation and adjust accordingly.
+
+3. Reply with a response from the user's point of view, and don't refer to the goal within itself.
+
+"""
+
 anthropic_client = anthropic.Anthropic(api_key=settings.ANTHROPIC_API_KEY)
 
 def get_ai_coaching_advice(formatted_workout_data: str) -> str:
@@ -38,8 +53,8 @@ Please analyze the user's context and initial goal, then provide an improved, mo
         message = anthropic_client.messages.create(
             model="claude-3-5-sonnet-20240620",
             max_tokens=200,
-            temperature=0,
-            system="You are an expert strength and conditioning coach specializing in goal setting. Your task is to analyze the user's training history, current goals, and their initial goal to provide a more specific, measurable, achievable, relevant, and time-bound (SMART) goal. Your response should be concise and directly state the improved goal without any additional explanation.",
+            temperature=1,
+            system=AI_COACH_PROMPT,
             messages=[
                 {
                     "role": "user",

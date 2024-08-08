@@ -6,6 +6,8 @@ import { ImprovedGoalStep } from './ImprovedGoalStep';
 import { ConfirmationStep } from './ConfirmationStep';
 import { ModalStep, UserInfoData, ImprovedGoal, WelcomeModalState } from '@/types';
 import { callImproveGoalAPI } from './utils';
+import { useUser } from '@/context/UserContext';
+import BackButton from '../../atoms/BackButton';
 
 type WelcomeModalProps = {
   isOpen: boolean;
@@ -56,21 +58,57 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({ isOpen, onClose }) =
     setState(prevState => ({ ...prevState, improvedGoal: editedGoal }));
   };
 
-  const handleFinish = () => {
-    console.log('Final submission:', {
-      userInfo: state.userInfo,
-      trainingHistory: state.trainingHistory,
-      improvedGoal: state.improvedGoal,
+  const handleBack = () => {
+    setCurrentStep((prevStep) => {
+      switch (prevStep) {
+        case ModalStep.TrainingHistory:
+          return ModalStep.UserInfo;
+        case ModalStep.InitialGoal:
+          return ModalStep.TrainingHistory;
+        case ModalStep.ImprovedGoal:
+          return ModalStep.InitialGoal;
+        default:
+          return prevStep;
+      }
     });
-    onClose();
   };
+  
+  const {updateProfile} = useUser()
 
+  const handleFinish = async () => {
+  try {
+    // Update user info
+    await updateProfile('first_name', state.userInfo.firstName);
+    await updateProfile('last_name', state.userInfo.lastName);
+    await updateProfile('display_name', state.userInfo.displayName);
+    await updateProfile('is_imperial', state.userInfo.isImperial);
+
+    // Update training history
+    await updateProfile('training_history', state.trainingHistory);
+
+    // Update goals (using the improved goal)
+    await updateProfile('goals', state.improvedGoal);
+
+    console.log('User profile updated successfully');
+    onClose();
+  } catch (error) {
+    console.error('Error updating user profile:', error);
+    // Handle error (e.g., show an error message to the user)
+  }
+};
+
+  
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-      <div className="bg-gray-500 p-8 rounded-lg w-96 shadow-xl border border-gray-300">
+      <div className={`bg-gray-500 p-8 rounded-lg shadow-xl border border-gray-300 ${
+      currentStep === ModalStep.ImprovedGoal ? 'w-3/4 max-w-4xl' : 'w-96'
+    }`}>
         <h2 className="text-2xl font-bold mb-4 text-gray-900">Welcome to SuperCoach!</h2>
+        {currentStep !== ModalStep.UserInfo && currentStep !== ModalStep.Confirmation && (
+  <BackButton onClick={handleBack} />
+)}
         {currentStep === ModalStep.UserInfo && <UserInfoStep onNext={handleUserInfoSubmit} initialData={state.userInfo} />}
         {currentStep === ModalStep.TrainingHistory && <TrainingHistoryStep onNext={handleTrainingHistorySubmit} initialData={state.trainingHistory} />}
         {currentStep === ModalStep.InitialGoal && <InitialGoalStep onNext={handleInitialGoalSubmit} initialData={state.initialGoal} />}
