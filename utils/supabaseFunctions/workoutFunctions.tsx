@@ -3,12 +3,15 @@ import { createClient } from "@/utils/supabase/client";
 
 const supabase = createClient()
 
-export async function uploadWorkout(userId: number, exercises: TrackedExercise[]) {
+export async function uploadWorkout(userId: number, exercises: TrackedExercise[], workoutName: string, workoutDescription: string) {
     try {
       // Insert the workout
       const { data: workout, error: workoutError } = await supabase
         .from('workouts')
-        .insert({ user_id: userId})
+        .insert({ user_id: userId,
+          name: workoutName,
+          description: workoutDescription
+        })
         .select()
         .single()
   

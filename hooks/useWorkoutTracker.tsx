@@ -31,9 +31,13 @@ export function useWorkoutTracker(userId: number) {
     );
   }, []);
 
-  const submitWorkout = useCallback(async () => {
+  const submitWorkout = useCallback(async (workoutName: string, workoutDescription: string) => {
+    if (!userId) {
+      console.error('User ID is undefined!')
+      throw new Error('User ID is required to submit a workout.')
+    }
     try {
-      const workoutId = await uploadWorkout(userId, exercises);
+      const workoutId = await uploadWorkout(userId, exercises, workoutName, workoutDescription);
       console.log('Workout uploaded successfully, ID:', workoutId);
       setExercises([]); // Clear exercises after successful upload
       return workoutId;
