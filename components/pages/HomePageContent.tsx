@@ -36,7 +36,7 @@ export default function HomePageContent() {
         </main>
         <div>
           <Button 
-          href="/workout/track"
+          href="/workout/new"
             >
             Track Workout
           </Button>

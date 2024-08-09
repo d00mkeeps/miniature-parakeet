@@ -1,7 +1,4 @@
-// In ImprovedGoalStep.tsx
-
 import React from 'react';
-import { Label } from '../../atoms/Label';
 import Button from '../../atoms/Button';
 
 type ImprovedGoalStepProps = {
