@@ -12,7 +12,7 @@ export default function Header({ children }: { children: React.ReactNode }) {
           Profile
         </Button>
         <Button href="/program" variant="primary" size="small">
-          Programs
+          Program
         </Button>
         <Button href="/workout/new" variant="primary" size="small">
           New Workout

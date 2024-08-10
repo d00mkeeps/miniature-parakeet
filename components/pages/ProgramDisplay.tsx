@@ -1,4 +1,3 @@
-// pages/ProgramDisplayPage.tsx
 import React, { useState } from 'react';
 import { useUser } from '@/context/UserContext';
 import { useUserPrograms } from '@/hooks/useUserPrograms';

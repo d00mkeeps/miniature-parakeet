@@ -15,7 +15,7 @@ const ProgramCard: React.FC<ProgramCardProps> = ({ program, onDelete }) => (
       </Paragraph>
       <div className={styles.programActions}>
         <Button
-          href={`/programs/edit/${program.id}`}
+          href={`/program/edit/${program.id}`}
           variant="primary"
           size="small"
         >

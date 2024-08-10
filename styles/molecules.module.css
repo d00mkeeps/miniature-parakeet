@@ -18,7 +18,9 @@
     font-size: 1.25rem;
     font-weight: bold;
     margin-bottom: 1rem;
-    color: #4A5568; }
+    color: #4A5568; 
+  
+  }
   
   .actionContainer {
     margin-top: 1rem;
@@ -73,8 +75,10 @@
     border-radius: 0.25rem;
     padding: 0.25rem;
     appearance: textfield;
+    margin-bottom: 1rem;
     -webkit-appearance: textfield;
     -moz-appearance: textfield;
+
   }
   
   .input::-webkit-outer-spin-button,
@@ -265,7 +269,7 @@
 
 .buttonGroup {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   gap: 0.5rem;
   margin-top: 1rem;
 }

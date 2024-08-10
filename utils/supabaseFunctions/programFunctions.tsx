@@ -1,5 +1,6 @@
 import { createClient } from '@/utils/supabase/client';
 import { Program } from '@/types';
+import { useUser } from '@/context/UserContext';
 
 export const fetchUserPrograms = async (userId: string): Promise<Program[]> => {
   const supabase = createClient();
@@ -57,3 +58,40 @@ export async function deleteProgram(programId: string): Promise<boolean> {
 
   return true;
 }
+
+export const useWorkoutFunctions = () => {
+  const supabase = createClient();
+  const { userProfile } = useUser();
+
+  const addWorkoutToProgram = async (
+    programId: string,
+    workoutName: string,
+    workoutDescription: string
+  ) => {
+    if (!userProfile) {
+      throw new Error("User not authenticated");
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from("program_workouts")
+        .insert({
+          program_id: programId,
+          name: workoutName,
+          description: workoutDescription,
+          user_id: userProfile.auth_user_uuid,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      return data;
+    } catch (error) {
+      console.error("Error adding workout to program:", error);
+      throw error;
+    }
+  };
+
+  return { addWorkoutToProgram };
+};

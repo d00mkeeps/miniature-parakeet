@@ -1,4 +1,3 @@
-// components/molecules/CreateProgramModal.tsx
 import React, { useState } from 'react';
 import { useUser } from '@/context/UserContext';
 import Button from '@/components/public/atoms/Button';
@@ -23,7 +22,7 @@ const CreateProgramModal: React.FC<CreateProgramModalProps> = ({ isOpen, onClose
       setIsSubmitting(true);
   
       try {
-        const newProgram = await insertProgram(name, description, userProfile.user_id);
+        const newProgram = await insertProgram(name, description, userProfile.auth_user_uuid);
         if (newProgram) {
           console.log('Program created:', newProgram);
           if (onProgramCreated) {
