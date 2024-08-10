@@ -319,3 +319,8 @@
 .textarea::placeholder {
   color: #999;
 }
+
+.select {
+  background-color: #2d3748;
+  padding-block: 5px;
+}

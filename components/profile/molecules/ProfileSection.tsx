@@ -1,5 +1,3 @@
-// components/molecules/ProfileSection.tsx
-
 import React from 'react';
 import { ProfileField } from '../atoms/ProfileField';
 import styles from '@/styles/molecules.module.css';
@@ -33,6 +31,7 @@ export const ProfileSection = ({ userProfile }: ProfileSectionProps) => {
         field="is_imperial" 
         value={userProfile.is_imperial ? 'Imperial' : 'Metric'} 
         onUpdate={handleUpdateProfile} 
+        isUnitSystem={true}
       />
       <ProfileField 
         label="Training History" 

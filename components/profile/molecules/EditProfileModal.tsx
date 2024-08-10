@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from 'react';
 import Button from '@/components/public/atoms/Button';
 import styles from '@/styles/molecules.module.css';
@@ -7,10 +5,11 @@ import styles from '@/styles/molecules.module.css';
 interface EditProfileFieldModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (value: string) => void;
+  onConfirm: (value: string | boolean) => void;
   fieldName: string;
-  currentValue: string;
+  currentValue: string | boolean;
   multiline?: boolean;
+  isUnitSystem?: boolean;
 }
 
 const EditProfileModal: React.FC<EditProfileFieldModalProps> = ({
@@ -19,18 +18,22 @@ const EditProfileModal: React.FC<EditProfileFieldModalProps> = ({
   onConfirm,
   fieldName,
   currentValue,
-  multiline = false
+  multiline = false,
+  isUnitSystem = false
 }) => {
-  const [inputValue, setInputValue] = useState(currentValue);
+  const [inputValue, setInputValue] = useState<string>(
+    isUnitSystem ? (currentValue === true ? 'Imperial' : 'Metric') : String(currentValue)
+  );
 
   useEffect(() => {
     if (isOpen) {
-      setInputValue(currentValue);
+      setInputValue(isUnitSystem ? (currentValue === true ? 'Imperial' : 'Metric') : String(currentValue));
     }
-  }, [isOpen, currentValue]);
+  }, [isOpen, currentValue, isUnitSystem]);
 
   const handleConfirm = () => {
-    onConfirm(inputValue);
+    const valueToSubmit = isUnitSystem ? inputValue === 'Imperial' : inputValue;
+    onConfirm(valueToSubmit);
     onClose();
   };
 
@@ -41,7 +44,16 @@ const EditProfileModal: React.FC<EditProfileFieldModalProps> = ({
       <div className={styles.modalContent}>
         <h2 className={styles.modalTitle}>Edit {fieldName}</h2>
         <div className={styles.formGroup}>
-          {multiline ? (
+          {isUnitSystem ? (
+            <select
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              className={styles.select}
+            >
+              <option value="Imperial">Imperial</option>
+              <option value="Metric">Metric</option>
+            </select>
+          ) : multiline ? (
             <textarea
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
