@@ -4,6 +4,7 @@ import { UserInfoData } from '@/types';
 import { Input } from '../../atoms/Input';
 import { Label } from '../../atoms/Label';
 import Button from '../../atoms/Button';
+import styles from '@/styles/atoms.module.css'
 
 type UserInfoStepProps = {
   onNext: (data: UserInfoData) => void;
@@ -22,7 +23,8 @@ export const UserInfoStep: React.FC<UserInfoStepProps> = ({ onNext, initialData 
         <Input
           id="displayName"
           {...register("displayName", { required: "Display name is required" })}
-          className="w-full p-2 border rounded bg-gray-800"
+          className={styles.input}
+
           placeholder="kingjohn21"
         />
         {errors.displayName && (
@@ -34,7 +36,8 @@ export const UserInfoStep: React.FC<UserInfoStepProps> = ({ onNext, initialData 
         <Input
           id="firstName"
           {...register("firstName")}
-          className="w-full p-2 border rounded bg-gray-800"
+          className={styles.input}
+
           placeholder="John"
         />
       </div>
@@ -43,7 +46,7 @@ export const UserInfoStep: React.FC<UserInfoStepProps> = ({ onNext, initialData 
         <Input
           id="lastName"
           {...register("lastName")}
-          className="w-full p-2 border rounded bg-gray-800"
+          className={styles.input}
           placeholder="Doe"
         />
       </div>
@@ -55,7 +58,7 @@ export const UserInfoStep: React.FC<UserInfoStepProps> = ({ onNext, initialData 
             {...register("isImperial")}
             className="mr-2"
           />
-          Use Imperial System
+          Use freedom units? (lbs, ft, etc)
         </Label>
       </div>
       <Button type="submit" variant="primary" size="large" className="w-full mt-4">

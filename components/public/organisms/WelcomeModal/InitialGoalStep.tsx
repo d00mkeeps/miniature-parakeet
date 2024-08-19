@@ -2,7 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Label } from '../../atoms/Label';
 import Button from '../../atoms/Button';
-
+import styles from '@/styles/organisms.module.css'
 type InitialGoalStepProps = {
   onNext: (goal: string) => void;
   initialData: string;
@@ -20,13 +20,13 @@ export const InitialGoalStep: React.FC<InitialGoalStepProps> = ({ onNext, initia
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="mb-4">
-        <Label htmlFor="goal">Your Goal</Label>
+        <Label htmlFor="goal"><b>Where do you want to be in 6 months?<br></br></b><br></br>It's important to set goals. Let's start by getting a good idea of how you'd like to improve.<br></br><br></br></Label>
         <textarea
           id="goal"
           {...register("goal", { required: "Goal is required" })}
-          className="w-full p-2 border rounded bg-gray-800"
+          className={styles.textarea}
           rows={3}
-          placeholder="I want to do a muscle up as quickly as possible"
+          placeholder="I want to maintain my total while prioritizing shoulder health."
         ></textarea>
         {errors.goal && (
           <span className="text-red-500">{errors.goal.message}</span>

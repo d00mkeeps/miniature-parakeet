@@ -21,7 +21,7 @@ const UserProfileDisplay = () => {
     <div className={styles.container}>
       <h1 className={styles.title}>User Profile</h1>
       <div className={styles.profileInfo}>
-        <p><strong>First Name:</strong> {userProfile.first_name || 'Not set'}</p>
+        <p><strong>Hi!</strong> {userProfile.first_name || 'Not set'}</p>
         <p><strong>Last Name:</strong> {userProfile.last_name || 'Not set'}</p>
         <p><strong>Display Name:</strong> {userProfile.display_name || 'Not set'}</p>
         <p><strong>Measurement System:</strong> {userProfile.is_imperial ? 'Imperial' : 'Metric'}</p>

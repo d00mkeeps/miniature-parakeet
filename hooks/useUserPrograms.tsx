@@ -18,7 +18,7 @@ export const useUserPrograms = () => {
       const { data, error } = await supabase
         .from('programs')
         .select('*')
-        .eq('user_id', userProfile.user_id);
+        .eq('user_id', userProfile.auth_user_uuid);
 
       if (error) throw error;
 

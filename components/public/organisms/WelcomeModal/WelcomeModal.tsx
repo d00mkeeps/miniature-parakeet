@@ -8,6 +8,7 @@ import { ModalStep, UserInfoData, ImprovedGoal, WelcomeModalState } from '@/type
 import { callImproveGoalAPI } from './utils';
 import { useUser } from '@/context/UserContext';
 import BackButton from '../../atoms/BackButton';
+import styles from '@/styles/molecules.module.css'
 
 type WelcomeModalProps = {
   isOpen: boolean;
@@ -102,10 +103,10 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({ isOpen, onClose }) =
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-      <div className={`bg-gray-500 p-8 rounded-lg shadow-xl border border-gray-300 ${
+      <div className={`bg-gray-800 p-8 rounded-lg shadow-xl border border-gray-300 ${
       currentStep === ModalStep.ImprovedGoal ? 'w-3/4 max-w-4xl' : 'w-96'
     }`}>
-        <h2 className="text-2xl font-bold mb-4 text-gray-900">Welcome to SuperCoach!</h2>
+        <h2 className={styles.modalTitle}>Welcome to SuperCoach!</h2>
         {currentStep !== ModalStep.UserInfo && currentStep !== ModalStep.Confirmation && (
   <BackButton onClick={handleBack} />
 )}

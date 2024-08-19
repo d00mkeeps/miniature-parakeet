@@ -2,7 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Label } from '../../atoms/Label';
 import Button from '../../atoms/Button';
-
+import styles from '@/styles/organisms.module.css'
 type TrainingHistoryStepProps = {
   onNext: (history: string) => void;
   initialData: string;
@@ -20,13 +20,13 @@ export const TrainingHistoryStep: React.FC<TrainingHistoryStepProps> = ({ onNext
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="mb-4">
-        <Label htmlFor="trainingHistory">Your Training History</Label>
+        <Label htmlFor="trainingHistory">Tell us about yourself! [i]<br></br> -1RMs<br></br> -Past injuries <br></br> -Training preferences<br></br><br></br><b>Training history:</b></Label>
         <textarea
           id="trainingHistory"
           {...register("trainingHistory", { required: "Training history is required" })}
-          className="w-full p-2 border rounded bg-gray-800"
+          className={styles.textarea}
           rows={5}
-          placeholder="Tell us about your training experience..."
+          placeholder="I'm a powerlifter with a big total and shoulder problems..."
         ></textarea>
         {errors.trainingHistory && (
           <span className="text-red-500">{errors.trainingHistory.message}</span>
