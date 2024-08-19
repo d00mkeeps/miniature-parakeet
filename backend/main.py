@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from core.config import settings
-from api.endpoints import timeframe_router, goals_router
+from api.endpoints import welcome_llm
 
 app = FastAPI()
 
@@ -12,13 +12,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.include_router(timeframe_router, prefix="/api", tags=["timeframe"])
-app.include_router(goals_router, prefix="/api", tags=["goals"])
-print(f"Routes: {[route for route in app.routes]}")
+
+app.include_router(welcome_llm.router, prefix="/api", tags=["welcome_llm"])
 
 @app.get("/")
 async def root():
-    return {"message": "Welcome to the Workout Data API"}
+    return {"message": "Welcome to the API"}
 
 if __name__ == "__main__":
     import uvicorn
