@@ -1,8 +1,17 @@
-import Test from '@/components/public/organisms/ConversationInterface/Test'
+'use client'
+import React from 'react';
+import WorkoutHistoryConversation from '@/components/conversation/WorkoutHistoryConversation';
 
-const TestPage = () => {
-    return  ( <div style={{ width: '100%', padding: '20px' }}>
-        <Test/>
-        </div>)
-}
-export default TestPage
+const WorkoutPage: React.FC = () => {
+  const handleSummaryGenerated = (summary: string) => {
+    console.log('Generated summary:', summary);
+  };
+
+  return (
+    <div>
+      <WorkoutHistoryConversation onSummaryGenerated={handleSummaryGenerated} />
+    </div>
+  );
+};
+
+export default WorkoutPage;

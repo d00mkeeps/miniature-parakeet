@@ -1,20 +1,32 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react';
-import axios from 'axios';
-import styles from './Test.module.css';
-import Button from '../../atoms/Button';  // Adjust the import path as needed
+import styles from './ConversationInterface.module.css';
+import Button from '../../atoms/Button'; 
+import UserProfileConfirmationModal from '../../molecules/UserProfileConfirmationModal'
 
 interface Message {
     role: 'user' | 'assistant';
     content: string;
 }
 
-const Test: React.FC = () => {
+interface ConversationInterfaceProps {
+    apiEndpoint: string;
+    summaryEndpoint: string;
+    title?: string;
+}
+
+const ConversationInterface: React.FC<ConversationInterfaceProps> = ({ 
+    apiEndpoint, 
+    summaryEndpoint,
+    title = "Training History Collection" 
+}) => {
     const [isLoading, setIsLoading] = useState(false);
     const [messages, setMessages] = useState<Message[]>([]);
     const [inputText, setInputText] = useState('');
     const [streamingMessage, setStreamingMessage] = useState('');
+    const [summary, setSummary] = useState<string | null>(null);
+    const [showConfirmationModal, setShowConfirmationModal] = useState(false);
     const scrollableRef = useRef<HTMLDivElement>(null);
 
     const handleSendMessage = async () => {
@@ -25,13 +37,11 @@ const Test: React.FC = () => {
         const updatedMessages = [...messages, userMessage];
         setMessages(updatedMessages);
     
-        console.log('Full conversation:', updatedMessages);
-    
         setInputText('');
         setStreamingMessage('');
     
         try {
-            const response = await fetch('http://localhost:8000/api/welcome_llm', {
+            const response = await fetch(apiEndpoint, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -55,8 +65,13 @@ const Test: React.FC = () => {
                     if (line.startsWith('data: ')) {
                         const data = line.slice(6);
                         if (data === '[DONE]') {
-                            setMessages(prev => [...prev, { role: 'assistant', content: fullResponse }]);
+                            const finalMessage = { role: 'assistant' as const, content: fullResponse };
+                            setMessages(prev => [...prev, finalMessage]);
                             setStreamingMessage('');
+                            
+                            if (fullResponse.includes('SUMMARY_READY')) {
+                                await getSummary([...updatedMessages, finalMessage]);
+                            }
                         } else {
                             fullResponse += data;
                             setStreamingMessage(fullResponse);
@@ -65,12 +80,45 @@ const Test: React.FC = () => {
                 }
             }
         } catch (error) {
-            console.error('Error fetching coach response:', error);
+            console.error('Error fetching response:', error);
             // Optionally, add error handling UI here
         }
         setIsLoading(false);
     };
 
+    const getSummary = async (conversationMessages: Message[]) => {
+        try {
+            const response = await fetch(summaryEndpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ messages: conversationMessages }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to get summary');
+            }
+
+            const data = await response.json();
+            setSummary(data.summary);
+            setShowConfirmationModal(true);
+            console.log('User Training History Summary:', data.summary);
+        } catch (error) {
+            console.error('Error getting summary:', error);
+        }
+    };
+
+    const handleConfirmSummary = () => {
+        setShowConfirmationModal(false);
+        // You can add any additional actions here after confirmation
+    };
+
+    const handleCancelSummary = () => {
+        setShowConfirmationModal(false);
+        setSummary(null);
+        // You can add any additional actions here after cancellation
+    };
     useEffect(() => {
         if (scrollableRef.current) {
             scrollableRef.current.scrollTop = scrollableRef.current.scrollHeight;
@@ -79,7 +127,7 @@ const Test: React.FC = () => {
 
     return (
         <div className={styles.container}>
-            <h1>LLM Coach Conversation</h1>
+            <h1>{title}</h1>
             <div className={styles.scrollableContainer} ref={scrollableRef}>
                 <div className={styles.messageList}>
                     {messages.map((message, index) => (
@@ -112,8 +160,15 @@ const Test: React.FC = () => {
                     {isLoading ? 'Sending...' : 'Send'}
                 </Button>
             </div>
-        </div>
+            {showConfirmationModal && summary && (
+                <UserProfileConfirmationModal
+                    summary={summary}
+                    onConfirm={handleConfirmSummary}
+                    onCancel={handleCancelSummary}
+                />
+            )}
+            </div>
     );
 };
 
-export default Test;
+export default ConversationInterface;
