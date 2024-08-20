@@ -15,7 +15,8 @@ interface ConversationUIProps {
     onSendMessage: (message: string) => void;
     onReset: () => void;
     title?: string;
-    subtitle?: string
+    subtitle?: string;
+    error?: any
 }
 
 const ConversationUI: React.FC<ConversationUIProps> = ({
@@ -26,6 +27,7 @@ const ConversationUI: React.FC<ConversationUIProps> = ({
     onReset,
     title,
     subtitle,
+    
 }) => {
     const [inputText, setInputText] = useState('');
     const scrollableRef = useRef<HTMLDivElement>(null);
@@ -42,6 +44,19 @@ const ConversationUI: React.FC<ConversationUIProps> = ({
         }
     }, [messages, streamingMessage]);
 
+    const renderMessageContent = (content: string) => {
+        if (content.includes('---')) {
+            const [textPart, jsonPart] = content.split('---');
+            return (
+                <>
+                    <div className={styles.textPart}>{textPart.trim()}</div>
+                    <pre className={styles.jsonPart}>{jsonPart.trim()}</pre>
+                </>
+            );
+        }
+        return content;
+    };
+
     return (
         <div className={styles.container}>
             <h1 className={styles.title}>{title}</h1>
@@ -50,12 +65,12 @@ const ConversationUI: React.FC<ConversationUIProps> = ({
                 <div className={styles.messageList}>
                     {messages.map((message, index) => (
                         <div key={index} className={`${styles.messageItem} ${styles[message.role]}`}>
-                            {message.content}
+                            {renderMessageContent(message.content)}
                         </div>
                     ))}
                     {streamingMessage && (
                         <div className={`${styles.messageItem} ${styles.assistant}`}>
-                            {streamingMessage}
+                            {renderMessageContent(streamingMessage)}
                         </div>
                     )}
                 </div>

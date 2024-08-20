@@ -29,11 +29,12 @@
     margin: 5px 0;
     border-radius: 4px;
     max-width: 80%;
+    overflow-wrap: break-word;
 }
 
 .user {
     align-self: flex-end;
-    background-color: #4CAF50;
+    background-color: royalblue;
     color: white;
 }
 
@@ -90,3 +91,20 @@
     font-size: small;
     font-weight: normal;
 }
+
+.textPart {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    margin-bottom: 10px;
+  }
+  
+  .jsonPart {
+    background-color: #444444;
+    padding: 10px;
+    border-radius: 4px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: monospace;
+    font-size: 0.9em;
+    color: #e0e0e0
+  }
