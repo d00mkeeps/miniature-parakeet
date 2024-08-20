@@ -1,18 +1,42 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useUser } from '@/context/UserContext';
 import useConversation from '@/hooks/useConversation';
 import ConversationUI from './public/ConversationUI';
-import { UserProfile } from '@/types';
 
 interface WorkoutHistoryConversationProps {
   onSummaryGenerated?: (summary: string) => void;
+  onHistoryUpdated?: (resetConversation: () => void) => void;
   initialMessages?: Array<{ role: 'user' | 'assistant'; content: string }>;
 }
 
+const Notification: React.FC<{ message: string; type: 'success' | 'error' }> = ({ message, type }) => (
+  <div style={{
+    position: 'fixed',
+    top: '20px',
+    right: '20px',
+    padding: '10px 20px',
+    borderRadius: '5px',
+    backgroundColor: type === 'success' ? '#4CAF50' : '#f44336',
+    color: 'white',
+    zIndex: 1000
+  }}>
+    {message}
+  </div>
+);
+
 const WorkoutHistoryConversation: React.FC<WorkoutHistoryConversationProps> = ({
   onSummaryGenerated,
+  onHistoryUpdated,
   initialMessages = [],
 }) => {
+  const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+  const { userProfile, updateProfile } = useUser();
+
+  const showNotification = (message: string, type: 'success' | 'error') => {
+    setNotification({ message, type });
+    setTimeout(() => setNotification(null), 3000); // Hide after 3 seconds
+  };
+
   const {
     messages,
     isLoading,
@@ -24,69 +48,54 @@ const WorkoutHistoryConversation: React.FC<WorkoutHistoryConversationProps> = ({
   } = useConversation({
     apiEndpoint: 'http://localhost:8000/api/welcome_llm',
     initialMessages,
+    onSummaryApproved: () => {
+      const summaryMessage = messages[messages.length - 1];
+      if (summaryMessage && summaryMessage.role === 'assistant') {
+        try {
+          console.log("Summary message content:", summaryMessage.content);
+          
+          const parts = summaryMessage.content.split('---');
+          const jsonPart = parts[parts.length - 1].trim();
+          
+          console.log("JSON part:", jsonPart);
+
+          const summaryObject = JSON.parse(jsonPart);
+          
+          console.log("Parsed summary object:", summaryObject);
+
+          updateProfile('training_history', summaryObject)
+            .then((success) => {
+              if (success) {
+                showNotification('Training history updated successfully!', 'success');
+                if (onHistoryUpdated) {
+                  onHistoryUpdated(resetConversation);
+                }
+                onSummaryGenerated?.('Summary approved and profile updated');
+              } else {
+                console.error('Failed to update profile');
+                showNotification('Failed to update training history', 'error');
+              }
+            })
+            .catch((error) => {
+              console.error('Error updating profile:', error);
+              showNotification('Error updating training history', 'error');
+            });
+
+        } catch (error) {
+          console.error('Error processing summary:', error);
+          console.error('Summary content:', summaryMessage.content);
+          showNotification('Error processing summary', 'error');
+        }
+      } else {
+        console.error('No valid summary message found');
+        showNotification('No valid summary found', 'error');
+      }
+    },
   });
 
-  const { userProfile, updateProfile } = useUser();
-  const [latestSummary, setLatestSummary] = useState<string | null>(null);
-  const formatSummary = (rawSummary: string) => {
-    console.log("Raw summary to format:", rawSummary);
-    // Split the summary into text and JSON parts
-    const [textPart, jsonPart] = rawSummary.split('---');
-  
-    // Format the text part
-    const formattedText = textPart.trim().split('\n').map(line => {
-      const colonIndex = line.indexOf(':');
-      if (colonIndex !== -1) {
-        const key = line.slice(0, colonIndex).trim();
-        const value = line.slice(colonIndex + 1).trim();
-        return `• ${key}: ${value}`;
-      }
-      return `• ${line.trim()}`;
-    }).join('\n');
-  
-    // Parse and format the JSON part
-    try {
-      const jsonObject = JSON.parse(jsonPart.trim());
-      const formattedJson = JSON.stringify(jsonObject, null, 2);
-      return `${formattedText}\n\n---\n\n${formattedJson}`;
-    } catch (error) {
-      console.error('Error parsing JSON:', error);
-      return `${formattedText}\n\n---\n\nError parsing JSON`;
-    }
-  };
-  useEffect(() => {
-    const lastMessage = messages[messages.length - 1];
-    if (lastMessage && lastMessage.role === 'assistant') {
-      console.log("Last message content:", lastMessage.content);
-      if (lastMessage.content.trim() === 'DAVEGROHL') {
-        const summaryMessage = messages[messages.length - 2];
-        if (summaryMessage && summaryMessage.role === 'assistant') {
-          console.log("Summary message content:", summaryMessage.content)
-          try {
-            const formattedSummary = formatSummary(summaryMessage.content);
-            const parts = formattedSummary.split('---');
-            const jsonStr = parts[parts.length - 1].trim();
-            const summaryObject = JSON.parse(jsonStr);
-            Object.entries(summaryObject).forEach(([key, value]) => {
-              updateProfile(key as keyof UserProfile, value as string | boolean);
-            });
-            onSummaryGenerated?.('Summary approved and profile updated');
-            setMessages((prevMessages) => [
-              ...prevMessages.slice(0, -2), {role: 'assistant', content: formattedSummary}]);
-            setLatestSummary(formattedSummary);
-          } catch (error) {
-            console.error('Error parsing summary JSON:', error);
-          }
-        }
-      } else if (lastMessage.content.includes('---')) {
-        console.log("Message with '---' detected:", lastMessage.content);
-        const formattedSummary = formatSummary(lastMessage.content);
-        setLatestSummary(formattedSummary);
-      }
-    }
-  }, [messages, onSummaryGenerated, updateProfile, setMessages]);
   return (
     <div>
+      {notification && <Notification message={notification.message} type={notification.type} />}
       <ConversationUI
         messages={messages}
         isLoading={isLoading}
@@ -94,9 +103,8 @@ const WorkoutHistoryConversation: React.FC<WorkoutHistoryConversationProps> = ({
         onSendMessage={sendMessage}
         onReset={resetConversation}
         title="Let's get to know each other!"
-        subtitle='Send a message to speak with the TrainSmart coach'
+        subtitle=''
       />
-      
     </div>
   );
 };

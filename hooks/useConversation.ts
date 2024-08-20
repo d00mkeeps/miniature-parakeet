@@ -8,9 +8,10 @@ interface Message {
 interface UseConversationOptions {
     apiEndpoint: string;
     initialMessages?: Message[];
+    onSummaryApproved?: () => void;
 }
 
-const useConversation = ({ apiEndpoint, initialMessages = [] }: UseConversationOptions) => {
+const useConversation = ({ apiEndpoint, initialMessages = [], onSummaryApproved }: UseConversationOptions) => {
     const [messages, setMessages] = useState<Message[]>(initialMessages);
     const [isLoading, setIsLoading] = useState(false);
     const [streamingMessage, setStreamingMessage] = useState('');
@@ -48,15 +49,24 @@ const useConversation = ({ apiEndpoint, initialMessages = [] }: UseConversationO
                         const data = line.slice(6);
                         if (data === '[DONE]') {
                             if (accumulatedResponse) {
-                                const finalMessage: Message = { role: 'assistant', content: accumulatedResponse };
-                                setMessages(prevMessages => [...prevMessages, finalMessage]);
+                                if (accumulatedResponse.trim() === 'DAVEGROHL') {
+                                    console.log('Summary approved!');
+                                    if (onSummaryApproved) {
+                                        onSummaryApproved();
+                                    }
+                                } else {
+                                    const finalMessage: Message = { role: 'assistant', content: accumulatedResponse };
+                                    setMessages(prevMessages => [...prevMessages, finalMessage]);
+                                }
                                 setStreamingMessage('');
                             }
                         } else {
                             try {
                                 const parsedData = JSON.parse(data);
                                 accumulatedResponse += parsedData.content;
-                                setStreamingMessage(accumulatedResponse);
+                                if (accumulatedResponse.trim() !== 'DAVEGROHL') {
+                                    setStreamingMessage(accumulatedResponse);
+                                }
                             } catch (e) {
                                 console.error('Error parsing streaming data:', e);
                             }
@@ -70,7 +80,7 @@ const useConversation = ({ apiEndpoint, initialMessages = [] }: UseConversationO
         } finally {
             setIsLoading(false);
         }
-    }, [apiEndpoint, messages]);
+    }, [apiEndpoint, messages, onSummaryApproved]);
 
     const resetConversation = useCallback(() => {
         setMessages(initialMessages);

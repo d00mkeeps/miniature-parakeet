@@ -70,13 +70,19 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   console.log("UserProvider state:", { userProfile, loading, error });
 
   
-  const updateProfile = async (field: keyof UserProfile, value: string | boolean) => {
+  const updateProfile = async (field: keyof UserProfile, value: string | boolean  | JSON) => {
     if (!userProfile) return false;
 
     try {
+
+      let updateValue = value;
+    if (field === 'training_history' && typeof value === 'object') {
+      updateValue = value;
+    }
+
       const { data, error } = await supabase
         .from("user_profiles")
-        .update({ [field]: value })
+        .update({ [field]: updateValue })
         .eq("user_id", userProfile.user_id);
 
       if (error) throw error;

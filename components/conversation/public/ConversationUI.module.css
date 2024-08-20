@@ -106,5 +106,6 @@
     word-wrap: break-word;
     font-family: monospace;
     font-size: 0.9em;
-    color: #e0e0e0
+    color: #d5d5d5;
+    font-weight: 400;
   }
