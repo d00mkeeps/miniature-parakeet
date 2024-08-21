@@ -127,3 +127,7 @@
   font-weight: bold;
   margin-right: 10px;
 }
+
+.profilePage {
+  min-width: 40rem;
+}

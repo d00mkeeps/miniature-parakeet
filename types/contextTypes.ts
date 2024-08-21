@@ -9,7 +9,7 @@ interface UserProfile {
   display_name: string | null;
   user_id: number;
   auth_user_uuid: string ;
-  training_history: JSON | null;
+  training_history: JSON| string | null;
   goals: string | null;
 }
 

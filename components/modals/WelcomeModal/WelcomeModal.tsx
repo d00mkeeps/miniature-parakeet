@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { UserInfoStep } from './UserInfoStep';
-import { TrainingHistoryStep } from './TrainingHistoryStep';
 import { ModalStep, UserInfoData, WelcomeModalState } from '@/types';
 import { useUser } from '@/context/UserContext';
 import BackButton from '../../public/atoms/BackButton';
-import Button from '../../public/atoms/Button';
 import styles from "./WelcomeModal.module.css";
+
+import { WelcomeStep } from './WelcomeStep';
+import { UserInfoStep } from './UserInfoStep';
+import { TrainingHistoryStep } from './TrainingHistoryStep';
+import { GoalStep } from './GoalStep';
+import { SendOffStep } from './SendOffStep';
 
 type WelcomeModalProps = {
   isOpen: boolean;
@@ -88,11 +91,7 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({ isOpen, onClose }) =
         )}
 
         {currentStep === ModalStep.Welcome && (
-          <div>
-            <h2>Welcome to Our App!</h2>
-            <p>We're excited to have you on board. Let's get started by setting up your profile.</p>
-            <Button onClick={() => setCurrentStep(ModalStep.UserInfo)}>Get Started</Button>
-          </div>
+          <WelcomeStep onNext={() => setCurrentStep(ModalStep.UserInfo)} />
         )}
 
         {currentStep === ModalStep.UserInfo && (
@@ -104,25 +103,11 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({ isOpen, onClose }) =
         )}
 
         {currentStep === ModalStep.Goal && (
-          <div>
-            <h2>Set Your Fitness Goal</h2>
-            <p>This is a placeholder for the goal conversation component.</p>
-            <input
-              type="text"
-              value={state.goal}
-              onChange={(e) => setState(prevState => ({ ...prevState, goal: e.target.value }))}
-              placeholder="Enter your fitness goal"
-            />
-            <Button onClick={() => handleGoalSubmit(state.goal)}>Next</Button>
-          </div>
+          <GoalStep onNext={handleGoalSubmit} initialGoal={state.goal} />
         )}
 
         {currentStep === ModalStep.SendOff && (
-          <div>
-            <h2>You're All Set!</h2>
-            <p>Thank you for completing your profile. We're excited to help you achieve your fitness goals!</p>
-            <Button onClick={handleFinish}>Start Your Journey</Button>
-          </div>
+          <SendOffStep onFinish={handleFinish} />
         )}
       </div>
     </div>

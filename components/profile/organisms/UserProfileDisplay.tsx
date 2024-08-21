@@ -1,34 +1,84 @@
-// components/organisms/UserProfileDisplay.tsx
-
 'use client'
-import { useUser } from '@/context/UserContext';
-import { PageTitle } from '../../public/atoms/PageTitle';
-import { LoadingSpinner } from '@/components/public/atoms/LoadingSpinner';
-import { ErrorMessage } from '@/components/public/atoms/ErrorMessage';
-import { ProfileSection } from '../molecules/ProfileSection';
-import styles from '@/styles/organisms.module.css';
+import React from 'react';
+import styles from '@/styles/atoms.module.css';
 
-export const UserProfileDisplay = () => {
-  const { userProfile, loading, error } = useUser();
+interface ProfileFieldProps {
+  label: string;
+  field: string;
+  value: string | boolean;
+  onUpdate: (field: string, value: string | boolean) => void;
+  multiline?: boolean;
+  isUnitSystem?: boolean;
+  readOnly?: boolean;
+}
 
-  if (loading) {
-    return <LoadingSpinner />;
-  }
+export const ProfileField: React.FC<ProfileFieldProps> = ({ 
+  label, 
+  field, 
+  value, 
+  onUpdate, 
+  multiline, 
+  isUnitSystem,
+  readOnly
+}) => {
+  const [isEditing, setIsEditing] = React.useState(false);
+  const [editedValue, setEditedValue] = React.useState(value);
 
-  if (error) {
-    return <ErrorMessage message={error.message} />;
-  }
+  const handleEdit = () => {
+    if (!readOnly) {
+      setIsEditing(true);
+    }
+  };
 
-  if (!userProfile) {
-    return <div>No user profile found.</div>;
+  const handleSave = () => {
+    onUpdate(field, editedValue);
+    setIsEditing(false);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setEditedValue(e.target.value);
+  };
+
+  const handleToggle = () => {
+    onUpdate(field, !value);
+  };
+
+  if (isUnitSystem) {
+    return (
+      <div className={styles.profileField}>
+        <span>{label}:</span>
+        <button onClick={handleToggle}>{value ? 'Imperial' : 'Metric'}</button>
+      </div>
+    );
   }
 
   return (
-    <div className={styles.container}>
-      <PageTitle title="User Profile" />
-      <ProfileSection userProfile={userProfile} />
+    <div className={styles.profileField}>
+      <span>{label}:</span>
+      {isEditing ? (
+        <>
+          {multiline ? (
+            <textarea 
+              value={editedValue as string} 
+              onChange={handleChange}
+              className={styles.textArea}
+            />
+          ) : (
+            <input 
+              type="text" 
+              value={editedValue as string} 
+              onChange={handleChange}
+              className={styles.input}
+            />
+          )}
+          <button onClick={handleSave} className={styles.button}>Save</button>
+        </>
+      ) : (
+        <>
+          <span>{value as string}</span>
+          {!readOnly && <button onClick={handleEdit} className={styles.button}>Edit</button>}
+        </>
+      )}
     </div>
   );
 };
-
-export default UserProfileDisplay;

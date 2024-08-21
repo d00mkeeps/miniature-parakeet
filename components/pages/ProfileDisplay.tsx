@@ -17,6 +17,17 @@ const UserProfileDisplay = () => {
     return <div>No user profile found.</div>;
   }
 
+  const formatJSON = (data: any): string => {
+    if (typeof data === 'string') {
+      try {
+        return JSON.stringify(JSON.parse(data), null, 2);
+      } catch {
+        return data;
+      }
+    }
+    return JSON.stringify(data, null, 2);
+  };
+
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>User Profile</h1>
@@ -28,11 +39,15 @@ const UserProfileDisplay = () => {
         <p><strong>User ID:</strong> {userProfile.user_id}</p>
         <div>
           <strong>Training History:</strong>
-          <pre className={styles.preWrapped}>{userProfile.training_history || 'Not set'}</pre>
+          <pre className={styles.preWrapped}>
+            {userProfile.training_history ? formatJSON(userProfile.training_history) : 'Not set'}
+          </pre>
         </div>
         <div>
           <strong>Goals:</strong>
-          <pre className={styles.preWrapped}>{userProfile.goals || 'Not set'}</pre>
+          <pre className={styles.preWrapped}>
+            {userProfile.goals ? formatJSON(userProfile.goals) : 'Not set'}
+          </pre>
         </div>
       </div>
     </div>

@@ -1,14 +1,13 @@
+
 import React, { useState } from 'react';
 import styles from '@/styles/atoms.module.css';
-import EditProfileFieldModal from '../molecules/EditProfileModal';
-import Button from '../../public/atoms/Button';
 import { UserProfile } from '@/types';
 
 interface ProfileFieldProps {
   label: string;
   field: keyof UserProfile;
-  value: string | boolean | null | undefined;
-  onUpdate: (field: keyof UserProfile, value: string | boolean) => Promise<void>;
+  value: string;
+  onUpdate: (field: keyof UserProfile, value: any) => Promise<void>;
   multiline?: boolean;
   isUnitSystem?: boolean;
 }
@@ -18,44 +17,65 @@ export const ProfileField: React.FC<ProfileFieldProps> = ({
   field, 
   value, 
   onUpdate, 
-  multiline = false,
-  isUnitSystem = false
+  multiline, 
+  isUnitSystem 
 }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [displayValue, setDisplayValue] = useState<string | boolean>(
-    isUnitSystem ? (value === true ? 'Imperial' : 'Metric') : (value ?? 'Not set')
-  );
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedValue, setEditedValue] = useState(value);
 
   const handleEdit = () => {
-    setIsModalOpen(true);
+    setIsEditing(true);
   };
 
-  const handleConfirm = async (newValue: string | boolean) => {
-    await onUpdate(field, newValue);
-    setDisplayValue(isUnitSystem ? (newValue === true ? 'Imperial' : 'Metric') : newValue);
-    setIsModalOpen(false);
+  const handleSave = async () => {
+    await onUpdate(field, editedValue);
+    setIsEditing(false);
   };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setEditedValue(e.target.value);
+  };
+
+  const handleToggle = async () => {
+    await onUpdate(field, !value);
+  };
+
+  if (isUnitSystem) {
+    return (
+      <div className={styles.profileField}>
+        <span>{label}:</span>
+        <button onClick={handleToggle}>{value}</button>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.profileField}>
-      <strong>{label}: </strong>
-      {multiline ? (
-        <pre className={`${styles.preWrapped} ${styles.multiline}`}>{displayValue}</pre>
+      <span>{label}:</span>
+      {isEditing ? (
+        <>
+          {multiline ? (
+            <textarea 
+              value={editedValue} 
+              onChange={handleChange}
+              className={styles.textArea}
+            />
+          ) : (
+            <input 
+              type="text" 
+              value={editedValue} 
+              onChange={handleChange}
+              className={styles.input}
+            />
+          )}
+          <button onClick={handleSave} className={styles.button}>Save</button>
+        </>
       ) : (
-        <span>{displayValue}</span>
+        <>
+          <pre className={styles.preWrapped}>{value}</pre>
+          <button onClick={handleEdit} className={styles.button}>Edit</button>
+        </>
       )}
-      <Button onClick={handleEdit} variant="secondary" size="small" className={styles.editButton}>
-        Edit
-      </Button>
-      <EditProfileFieldModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onConfirm={handleConfirm}
-        fieldName={label}
-        currentValue={displayValue}
-        multiline={multiline}
-        isUnitSystem={isUnitSystem}
-      />
     </div>
   );
 };
