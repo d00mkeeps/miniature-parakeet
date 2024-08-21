@@ -1,7 +1,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Label } from '../../atoms/Label';
-import Button from '../../atoms/Button';
+import { Label } from '../../public/atoms/Label';
+import Button from "../../public/atoms/Button";
 import styles from '@/styles/organisms.module.css'
 type InitialGoalStepProps = {
   onNext: (goal: string) => void;

@@ -1,5 +1,5 @@
 import React from "react";
-import Button from "../../atoms/Button";
+import Button from "../../public/atoms/Button";
 
 type ConfirmationStepProps = {
     onFinish: () => void;

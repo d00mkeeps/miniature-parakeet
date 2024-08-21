@@ -1,9 +1,9 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { UserInfoData } from '@/types';
-import { Input } from '../../atoms/Input';
-import { Label } from '../../atoms/Label';
-import Button from '../../atoms/Button';
+import { Input } from '../../public/atoms/Input';
+import { Label } from '../../public/atoms/Label';
+import Button from "../../public/atoms/Button";
 import styles from '@/styles/atoms.module.css'
 
 type UserInfoStepProps = {

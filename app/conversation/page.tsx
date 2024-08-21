@@ -5,14 +5,12 @@ import WorkoutHistoryConversation from '@/components/conversation/WorkoutHistory
 const WorkoutPage: React.FC = () => {
 
   const handleSummaryGenerated = (summary: string) => {
-    console.log('Generated summary:', summary);
   };
-const handleHistoryUpdated = (resetConversation: () => void) => {console.log('Training history updated!')
+const handleHistoryUpdated = (resetConversation: () => void) => {
 
   setTimeout(() => {
-    console.log("Resetting conversation after a delay");
-    resetConversation();
-  }, 500);  // Reset after 3 seconds, for example
+    resetConversation()
+  }, 500);
 
 }
   return (

@@ -8,7 +8,7 @@ interface WorkoutHistoryConversationProps {
   onHistoryUpdated?: (resetConversation: () => void) => void;
   initialMessages?: Array<{ role: 'user' | 'assistant'; content: string }>;
 }
-
+//TODO: ewepodsfij
 const Notification: React.FC<{ message: string; type: 'success' | 'error' }> = ({ message, type }) => (
   <div style={{
     position: 'fixed',
@@ -34,17 +34,15 @@ const WorkoutHistoryConversation: React.FC<WorkoutHistoryConversationProps> = ({
 
   const showNotification = (message: string, type: 'success' | 'error') => {
     setNotification({ message, type });
-    setTimeout(() => setNotification(null), 3000); // Hide after 3 seconds
+    setTimeout(() => setNotification(null), 3000);
   };
 
   const {
     messages,
     isLoading,
     streamingMessage,
-    setMessages,
     sendMessage,
     resetConversation,
-    error,
   } = useConversation({
     apiEndpoint: 'http://localhost:8000/api/welcome_llm',
     initialMessages,

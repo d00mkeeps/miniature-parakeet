@@ -38,7 +38,7 @@ export interface FormData {
     firstName: string;
     lastName: string;
     isImperial: boolean;
-    training_history: string | null;
+    training_history: JSON | null;
     goals?: string | null;
   }
 
@@ -77,16 +77,15 @@ export interface FormData {
   };
   
   export enum ModalStep {
+    Welcome,
     UserInfo,
     TrainingHistory,
-    InitialGoal,
-    ImprovedGoal,
-    Confirmation
+    Goal,
+    SendOff
   }
   
   export type WelcomeModalState = {
     userInfo: UserInfoData;
-    trainingHistory: string;
-    initialGoal: string;
-    improvedGoal: string;
-  }
+    trainingHistory: any;
+    goal: string;
+  };
